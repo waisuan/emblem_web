@@ -1,0 +1,79 @@
+<main role="main" class="container">
+  <div class="starter-template">
+    <form role="form" ng-submit="searchMachine()">
+      <div class="input-group">
+            <div class="input-group-btn">
+              <button type="button" class="btn btn-dark dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                {{searchType}}
+              </button>
+              <div class="dropdown-menu">
+                <a class="dropdown-item" onclick="toggleSearchValueInput(true)" ng-click="searchType = 'All'">All</a>
+                <a class="dropdown-item" onclick="toggleSearchValueInput(false)" ng-click="searchType = 'Serial No.'">Serial No.</a>
+                <!-- <a class="dropdown-item" href="#">Another action</a>
+                <a class="dropdown-item" href="#">Something else here</a>
+                <div role="separator" class="dropdown-divider"></div>
+                <a class="dropdown-item" href="#">Separated link</a> -->
+              </div>
+            </div>
+            <input id='searchValueInput' type="text" class="form-control" aria-label="Text input with dropdown button" ng-model="searchValue">
+          </div>
+      <!-- <div class="form-group row">
+        <label for="search-key" class="col-2 col-form-label">Serial No.:</label>
+        <div class="col-10">
+          <input class="form-control" type="text" value="" id="search-key" name="search-key">
+        </div>
+      </div> -->
+      <button type="submit" class="search-btn btn btn-primary float-right">Search</button>
+    </form>
+  </div>
+
+<table class="table table-striped">
+  <thead>
+    <tr>
+      <th>Customer</th>
+      <th>State</th>
+      <th>Model</th>
+      <th>TNC Date</th>
+      <th>Serial No.</th>
+      <th>Status</th>
+      <th>Person in Charge</th>
+      <th>Created On</th>
+      <th>Last Updated On</th>
+      <th>Reported By</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr ng-repeat="machine in machines">
+        <td>
+            {{machine.customer}}
+        </td>
+        <td>
+            {{machine.state}}
+        </td>
+        <td>
+            {{machine.model}}
+        </td>
+        <td>
+            {{machine.tncDate}}
+        </td>
+        <td>
+            {{machine.serialNumber}}
+        </td>
+        <td>
+            {{machine.status}}
+        </td>
+        <td>
+            {{machine.personInCharge}}
+        </td>
+        <td>
+            {{machine.dateOfCreation}}
+        </td>
+        <td>
+            {{machine.lastUpdated}}
+        </td>
+        <td>
+            {{machine.reportedBy}}
+        </td>
+    </tr>
+  </tbody>
+</table>
