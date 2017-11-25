@@ -9,11 +9,16 @@ var app = angular.module('emblem', [
     'ngRoute'
 ]);
 
+app.config(['$locationProvider', function($locationProvider) {
+  $locationProvider.hashPrefix('');
+  // $locationProvider.html5Mode(true);
+}]);
+
 app.config(function ($routeProvider) {
     $routeProvider.when('/', {
         templateUrl: 'views/machines.html',
         controller: 'ListMachinesCtrl'
-    }).when('/newMachine', {
+    }).when('/new_machine', {
         templateUrl: 'views/new_machine.html',
         controller: 'CreateNewMachineCtrl'
     }).otherwise({
@@ -47,18 +52,17 @@ app.controller('ListMachinesCtrl', function ($scope, $http) {
 });
 
 app.controller('CreateNewMachineCtrl', function ($scope, $http, $location) {
-    // $scope.todo = {
-    //     done: false
-    // };
-    //
-    // $scope.createTodo = function () {
-    //     console.log($scope.todo);
-    //     $http.post('/api/v1/todos', $scope.todo).success(function (data) {
-    //         $location.path('/');
-    //     }).error(function (data, status) {
-    //         console.log('Error ' + data)
-    //     })
-    // }
+    $scope.newMachine = {
+    };
+    $scope.createNewMachine = function () {
+        console.log('createNewMachine');
+        $http.post('/api/machines', $scope.newMachine).then(function (data) {
+            console.log(data);
+            // $location.path('/');
+        }).catch(function(response) {
+            console.error('Oops:: ', response.status, response.data);
+        })
+    }
 });
 
 function toggleSearchValueInput (mode) {
