@@ -19,3 +19,9 @@ body {
     float: right;
     clear: both;
 }
+
+table tbody td .btn {
+	horizontal-align: middle;
+	display: block;
+	margin:auto;
+}

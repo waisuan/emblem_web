@@ -51,14 +51,15 @@ app.controller('ListMachinesCtrl', function ($scope, $http) {
     }
 });
 
-app.controller('CreateNewMachineCtrl', function ($scope, $http, $location) {
+app.controller('CreateNewMachineCtrl', function ($scope, $http, $location, $route) {
     $scope.newMachine = {
     };
     $scope.createNewMachine = function () {
         console.log('createNewMachine');
         $http.post('/api/machines', $scope.newMachine).then(function (data) {
             console.log(data);
-            // $location.path('/');
+            $route.reload();
+            //$location.path('/new_machine');
         }).catch(function(response) {
             console.error('Oops:: ', response.status, response.data);
         })

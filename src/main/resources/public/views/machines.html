@@ -30,7 +30,7 @@
 <table class="table table-striped">
   <thead>
     <tr>
-      <th>Customer</th>
+      <th data-sortable="true">Customer</th>
       <th>State</th>
       <th>Model</th>
       <th>TNC Date</th>
@@ -40,6 +40,7 @@
       <th>Created On</th>
       <th>Last Updated On</th>
       <th>Reported By</th>
+      <th>Action</th>
     </tr>
   </thead>
   <tbody>
@@ -73,6 +74,12 @@
         </td>
         <td>
             {{machine.reportedBy}}
+        </td>
+        <td style='white-space: nowrap'>
+          <button class="btn btn-success">Edit</button>
+          <button class="btn btn-danger">Delete</button>
+          <button class="btn btn-default">History</button>
+          <button class="btn btn-default">Notes</button>
         </td>
     </tr>
   </tbody>
