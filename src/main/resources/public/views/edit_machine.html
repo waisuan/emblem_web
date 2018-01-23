@@ -1,0 +1,69 @@
+<form class="container" ng-submit="updateMachine()">
+  <div class="row">
+    <div class="col-md-12 mb-3">
+      <label for="serialNo">Serial No.</label>
+      <input type="text" class="form-control" id="serialNumber" ng-model="editMachine.serialNumber" readonly>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-3 mb-3">
+      <label for="customer">Customer</label>
+      <input type="text" class="form-control" id="customer" ng-model="editMachine.customer">
+    </div>
+    <div class="col-md-3 mb-3">
+      <label for="state">State</label>
+      <input type="text" class="form-control" id="state" ng-model="editMachine.state">
+    </div>
+    <div class="col-md-3 mb-3">
+      <label for="model">Model</label>
+      <input type="text" class="form-control" id="model" ng-model="editMachine.model">
+    </div>
+    <div class="col-md-3 mb-3">
+      <label for="tncDate">TNC Date</label>
+      <input type="text" class="form-control" id="tncDate" placeholder="MM/DD/YYYY" ng-model="editMachine.tncDate">
+    </div>
+</div>
+    <div class="row">
+      <div class="col-md-3 mb-3">
+        <label for="status">Status</label>
+        <input type="text" class="form-control" id="status" ng-model="editMachine.status">
+      </div>
+      <div class="col-md-3 mb-3">
+        <label for="personInCharge">Person in Charge</label>
+        <input type="text" class="form-control" id="personInCharge" ng-model="editMachine.personInCharge">
+      </div>
+      <div class="col-md-3 mb-3">
+        <label for="reportedBy">Reported By</label>
+        <input type="text" class="form-control" id="reportedBy" ng-model="editMachine.reportedBy">
+      </div>
+      <div class="col-md-3 mb-3">
+        <label for="accType">Acount Type</label>
+        <input type="text" class="form-control" id="accountType" ng-model="editMachine.accountType">
+      </div>
+      </div>
+      <div class="row">
+        <div class="col-md-6 mb-3">
+          <label for="ppmDate">PPM Date</label>
+          <input type="text" class="form-control" id="ppmDate" placeholder="MM/DD/YYYY" ng-model="editMachine.ppmDate">
+        </div>
+        <div class="col-md-6 mb-3">
+          <label for="brand">Brand</label>
+          <input type="text" class="form-control" id="brand" ng-model="editMachine.brand">
+        </div>
+    </div>
+    <div class="row">
+      <div class="col-md-12 mb-3">
+        <label for="additionalNotes">Additional Notes</label>
+        <textarea class="form-control" rows="5" id="additionalNotes" ng-model="editMachine.additionalNotes"></textarea>
+      </div>
+  </div>
+  <div>
+      <button class="btn btn-primary submit-btn" type="submit">Save</button>
+  </div>
+  <!-- <div class="alert alert-success alert-dismissible fade show" role="alert">
+      Success!
+      <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+      </button>
+  </div> -->
+</form>

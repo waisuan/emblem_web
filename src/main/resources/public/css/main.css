@@ -18,10 +18,24 @@ body {
 .submit-btn {
     float: right;
     clear: both;
+    margin-bottom: 5px;
 }
 
-table tbody td .btn {
-	horizontal-align: middle;
-	display: block;
-	margin:auto;
+.machines-tbl {
+    width: 100%;
+    /*width: 1200px;*/
+    /*cellspacing: 0;*/
+    /*table-layout: auto;*/
 }
+
+td {
+    word-wrap: break-word;
+}
+
+#create-success-alert {
+    visibility: hidden;
+}
+
+/*.container {
+    background-color: red;
+}*/

@@ -1,0 +1,47 @@
+<form class="container" ng-submit="createNewHistory()">
+  <div class="row">
+    <div class="col-md-12 mb-3">
+      <label for="serialNo">Serial No.</label>
+      <input type="text" class="form-control" id="serialNumber" ng-model="newHistory.serialNumber" readonly>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-3 mb-3">
+      <label for="workOrderNumber">Work Order No.</label>
+      <input type="text" class="form-control" id="workOrderNumber" ng-model="newHistory.workOrderNumber">
+    </div>
+    <div class="col-md-3 mb-3">
+      <label for="workOrderDate">Work Order Date</label>
+      <input type="text" class="form-control" id="workOrderDate" placeholder="MM/DD/YYYY" ng-model="newHistory.workOrderDate">
+    </div>
+    <div class="col-md-3 mb-3">
+      <label for="workOrderType">Work Order Type</label>
+      <input type="text" class="form-control" id="model" ng-model="newHistory.workOrderType">
+    </div>
+    <div class="col-md-3 mb-3">
+      <label for="reportedBy">Reported By</label>
+      <input type="text" class="form-control" id="model" ng-model="newHistory.reportedBy">
+    </div>
+  </div>
+  <div class="row">
+      <div class="col-md-12 mb-3">
+        <label for="actionTaken">Action Taken</label>
+        <textarea class="form-control" rows="5" id="actionTaken" ng-model="newHistory.actionTaken"></textarea>
+      </div>
+  </div>
+  <div class="row">
+      <div class="col-md-12">
+          <button class="btn btn-primary submit-btn" type="submit">Add</button>
+      </div>
+  </div>
+  <div class="row">
+      <div class="col-md-12">
+          <div id="create-success-alert" class="alert alert-success alert-dismissible fade show text-center" role="alert">
+              Success!
+              <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+          </div>
+      </div>
+  </div>
+</form>

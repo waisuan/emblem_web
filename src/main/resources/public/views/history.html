@@ -1,0 +1,38 @@
+<table class="table table-bordered machines-tbl">
+  <thead>
+    <tr>
+      <th data-sortable="true">Work Order No.</th>
+      <th>Work Order Date</th>
+      <th>Work Order Type</th>
+      <th>Reported By</th>
+      <th>Created On</th>
+      <th>Last Updated On</th>
+      <th>Action</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr ng-repeat="h in history">
+        <td>
+            {{h.workOrderNumber}}
+        </td>
+        <td>
+            {{h.workOrderDate}}
+        </td>
+        <td>
+            {{h.workOrderType}}
+        </td>
+        <td>
+            {{h.reportedBy}}
+        </td>
+        <td>
+            {{h.dateOfCreation}}
+        </td>
+        <td>
+            {{h.lastUpdated}}
+        </td>
+        <td>
+
+        </td>
+    </tr>
+  </tbody>
+</table>

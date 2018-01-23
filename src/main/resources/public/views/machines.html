@@ -1,86 +1,117 @@
 <main role="main" class="container">
-  <div class="starter-template">
-    <form role="form" ng-submit="searchMachine()">
-      <div class="input-group">
-            <div class="input-group-btn">
-              <button type="button" class="btn btn-dark dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                {{searchType}}
-              </button>
-              <div class="dropdown-menu">
-                <a class="dropdown-item" onclick="toggleSearchValueInput(true)" ng-click="searchType = 'All'">All</a>
-                <a class="dropdown-item" onclick="toggleSearchValueInput(false)" ng-click="searchType = 'Serial No.'">Serial No.</a>
-                <!-- <a class="dropdown-item" href="#">Another action</a>
-                <a class="dropdown-item" href="#">Something else here</a>
-                <div role="separator" class="dropdown-divider"></div>
-                <a class="dropdown-item" href="#">Separated link</a> -->
+  <div class="row starter-template">
+      <div class="col-md-12">
+        <form role="form" ng-submit="searchMachine()">
+          <div class="input-group">
+                <div class="input-group-btn">
+                  <button type="button" class="btn btn-dark dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    {{searchType}}
+                  </button>
+                  <div class="dropdown-menu">
+                    <a class="dropdown-item" onclick="toggleSearchValueInput(true)" ng-click="searchType = 'All'">All</a>
+                    <a class="dropdown-item" onclick="toggleSearchValueInput(false)" ng-click="searchType = 'Serial No.'">Serial No.</a>
+                  </div>
+                </div>
+                <input id='searchValueInput' type="text" class="form-control" aria-label="Text input with dropdown button" ng-model="searchValue">
               </div>
-            </div>
-            <input id='searchValueInput' type="text" class="form-control" aria-label="Text input with dropdown button" ng-model="searchValue">
-          </div>
-      <!-- <div class="form-group row">
-        <label for="search-key" class="col-2 col-form-label">Serial No.:</label>
-        <div class="col-10">
-          <input class="form-control" type="text" value="" id="search-key" name="search-key">
-        </div>
-      </div> -->
-      <button type="submit" class="search-btn btn btn-primary float-right">Search</button>
-    </form>
+          <button type="submit" class="search-btn btn btn-primary float-right">Search</button>
+        </form>
+    </div>
   </div>
 
-<table class="table table-striped">
-  <thead>
-    <tr>
-      <th data-sortable="true">Customer</th>
-      <th>State</th>
-      <th>Model</th>
-      <th>TNC Date</th>
-      <th>Serial No.</th>
-      <th>Status</th>
-      <th>Person in Charge</th>
-      <th>Created On</th>
-      <th>Last Updated On</th>
-      <th>Reported By</th>
-      <th>Action</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr ng-repeat="machine in machines">
-        <td>
-            {{machine.customer}}
-        </td>
-        <td>
-            {{machine.state}}
-        </td>
-        <td>
-            {{machine.model}}
-        </td>
-        <td>
-            {{machine.tncDate}}
-        </td>
-        <td>
-            {{machine.serialNumber}}
-        </td>
-        <td>
-            {{machine.status}}
-        </td>
-        <td>
-            {{machine.personInCharge}}
-        </td>
-        <td>
-            {{machine.dateOfCreation}}
-        </td>
-        <td>
-            {{machine.lastUpdated}}
-        </td>
-        <td>
-            {{machine.reportedBy}}
-        </td>
-        <td style='white-space: nowrap'>
-          <button class="btn btn-success">Edit</button>
-          <button class="btn btn-danger">Delete</button>
-          <button class="btn btn-default">History</button>
-          <button class="btn btn-default">Notes</button>
-        </td>
-    </tr>
-  </tbody>
-</table>
+    <div class="row">
+        <div class="col-xl-12">
+            <table class="table table-bordered machines-tbl">
+              <thead>
+                <tr>
+                  <th data-sortable="true">Serial No.</th>
+                  <th>State</th>
+                  <th>Model</th>
+                  <th>TNC Date</th>
+                  <th>Customer</th>
+                  <th>Status</th>
+                  <th>Account Type</th>
+                  <th>Brand</th>
+                  <th>Person in Charge</th>
+                  <th>Reported By</th>
+                  <th>Created On</th>
+                  <th>Last Updated On</th>
+                  <th>Action</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr ng-repeat="machine in machines">
+                    <td>
+                        {{machine.serialNumber}}
+                    </td>
+                    <td>
+                        {{machine.state}}
+                    </td>
+                    <td>
+                        {{machine.model}}
+                    </td>
+                    <td>
+                        {{machine.tncDate}}
+                    </td>
+                    <td>
+                        {{machine.customer}}
+                    </td>
+                    <td>
+                        {{machine.status}}
+                    </td>
+                    <td>
+                        {{machine.accountType}}
+                    </td>
+                    <td>
+                        {{machine.brand}}
+                    </td>
+                    <td>
+                        {{machine.personInCharge}}
+                    </td>
+                    <td>
+                        {{machine.reportedBy}}
+                    </td>
+                    <td>
+                        {{machine.dateOfCreation}}
+                    </td>
+                    <td>
+                        {{machine.lastUpdated}}
+                    </td>
+                    <td>
+                      <a href="#/edit_machine/{{machine.serialNumber}}">Edit</a>
+                      <a ng-click="setDelAim( machine.serialNumber )" onclick="return false;" href="#del" data-toggle="modal" data-target="#del">Delete</a>
+                      <a href="#/add_history/{{machine.serialNumber}}"> Add History</a>
+                      <a href="#/history/{{machine.serialNumber}}"> Show History</a>
+                      <a ng-click="showNotes()" onclick="return false;" href="#notes" data-toggle="modal" data-target="#notes" style="pointer-events: none;cursor: default;">Notes</a>
+                    </td>
+                    <div class="modal fade" id="notes" tabindex="-1" role="dialog" aria-labelledby="Notes" aria-hidden="true">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                    <div class="modal-body">
+                                        <textarea class="form-control col-xs-12" cols="100" rows="10" style="min-width: 100%; resize: vertical;" readonly>{{machine.additionalNotes}}</textarea>
+                                    </div>
+                                    <div class="modal-footer">
+                                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </tr>
+              </tbody>
+            </table>
+        </div>
+    </div>
+    <div class="modal fade" id="del" role="dialog">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5>Are you sure you want to delete this record forever?</h2>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-danger" ng-click="delMachine()">Yes</button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
