@@ -1,37 +1,37 @@
-<form name="add_history_form" class="container" ng-submit="createNewHistory()">
+<form name="edit_history_form" class="container" ng-submit="updateHistory()">
   <div class="row">
     <div class="col-md-12 mb-3">
       <label for="serialNo">Serial No.</label>
-      <input type="text" class="form-control" id="serialNumber" ng-model="newHistory.serialNumber" readonly>
+      <input type="text" class="form-control" id="serialNumber" ng-model="history.serialNumber" readonly>
     </div>
   </div>
   <div class="row">
     <div class="col-md-3 mb-3">
       <label for="workOrderNumber">Work Order No.</label>
-      <input type="text" class="form-control" id="workOrderNumber" ng-model="newHistory.workOrderNumber">
+      <input type="text" class="form-control" id="workOrderNumber" ng-model="history.workOrderNumber" readonly>
     </div>
     <div class="col-md-3 mb-3">
       <label for="workOrderDate">Work Order Date</label>
-      <input type="text" class="form-control" id="workOrderDate" placeholder="MM/DD/YYYY" ng-model="newHistory.workOrderDate">
+      <input type="text" class="form-control" id="workOrderDate" placeholder="MM/DD/YYYY" ng-model="history.workOrderDate">
     </div>
     <div class="col-md-3 mb-3">
       <label for="workOrderType">Work Order Type</label>
-      <input type="text" class="form-control" id="model" ng-model="newHistory.workOrderType">
+      <input type="text" class="form-control" id="model" ng-model="history.workOrderType">
     </div>
     <div class="col-md-3 mb-3">
       <label for="reportedBy">Reported By</label>
-      <input type="text" class="form-control" id="model" ng-model="newHistory.reportedBy">
+      <input type="text" class="form-control" id="model" ng-model="history.reportedBy">
     </div>
   </div>
   <div class="row">
       <div class="col-md-12 mb-3">
         <label for="actionTaken">Action Taken</label>
-        <textarea class="form-control" rows="5" id="actionTaken" ng-model="newHistory.actionTaken"></textarea>
+        <textarea class="form-control" rows="5" id="actionTaken" ng-model="history.actionTaken"></textarea>
       </div>
   </div>
   <div class="row">
       <div class="col-md-12">
-          <button class="btn btn-primary submit-btn" type="submit">Add</button>
+          <button class="btn btn-primary submit-btn" type="submit">Save</button>
       </div>
   </div>
   <div class="row">

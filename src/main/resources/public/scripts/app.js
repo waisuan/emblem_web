@@ -1,7 +1,3 @@
-/**
- * Created by shekhargulati on 10/06/14.
- */
-
 var app = angular.module('emblem', [
     'ngCookies',
     'ngResource',
@@ -11,7 +7,6 @@ var app = angular.module('emblem', [
 
 app.config(['$locationProvider', function($locationProvider) {
   $locationProvider.hashPrefix('');
-  // $locationProvider.html5Mode(true);
 }]);
 
 app.config(function ($routeProvider) {
@@ -21,51 +16,48 @@ app.config(function ($routeProvider) {
     }).when('/new_machine', {
         templateUrl: 'views/new_machine.html',
         controller: 'CreateNewMachineCtrl'
-    }).when('/edit_machine/:id', {
+    }).when('/edit_machine/:serialNumber', {
         templateUrl: 'views/edit_machine.html',
         controller: 'EditMachineCtrl'
-    }).when('/history/:id', {
+    }).when('/history/:serialNumber', {
         templateUrl: 'views/history.html',
         controller: 'ListHistoryCtrl'
-    }).when('/add_history/:id', {
+    }).when('/add_history/:serialNumber', {
         templateUrl: 'views/add_history.html',
         controller: 'CreateHistoryCtrl'
+    }).when('/edit_history/:serialNumber/:workOrderNumber', {
+        templateUrl: 'views/edit_history.html',
+        controller: 'EditHistoryCtrl'
     }).otherwise({
         redirectTo: '/'
     })
 });
 
-// app.controller('SearchController', function ($scope, $http, $location) {
-//
-// });
-
 app.controller('ListMachinesCtrl', function ($scope, $http, $location, $route, $timeout) {
+    $scope.searchType='Serial No.';
+    $scope.toDel = '';
+    $scope.notes = '';
+
     $http.get('/api/machines').then(function (data) {
-        console.log(data);
-        console.log(data.data.length);
         $scope.machines = data.data;
-        console.log($scope.machines);
-        // console.log($scope.machines[1].customer);
     })
 
-    $scope.searchType='Serial No.';
+    $scope.setDelAim = function (serialNumber) {
+        $scope.toDel = serialNumber;
+    }
+
+    $scope.showNotes = function (notes) {
+        $scope.notes = notes;
+    }
 
     $scope.searchMachine = function () {
-      console.log($scope.searchValue);
-      console.log($scope.searchType);
-      $http.get('/api/machines/'+ $scope.searchType+'/'+ $scope.searchValue, {params:{"type": $scope.searchType, "value": $scope.searchValue}}).then(function (data) {
-        console.log(data);
+      $http.get('/api/machines/'+ $scope.searchType + '/' + $scope.searchValue, {params:{"type": $scope.searchType, "value": $scope.searchValue}}).then(function (data) {
         $scope.machines = data.data;
       })
     }
 
-    $scope.toDel = '';
-
     $scope.delMachine = function () {
-        console.log('delMachine');
-        console.log($scope.toDel);
         $http.delete('/api/machines/' + $scope.toDel).then(function (data) {
-            console.log(data);
             $('#del').modal('toggle');
             $timeout(function(){
                // 1 second delay, might not need this long, but it works.
@@ -75,31 +67,20 @@ app.controller('ListMachinesCtrl', function ($scope, $http, $location, $route, $
             console.error('Oops:: ', response.status, response.data);
         })
     }
-
-    $scope.setDelAim = function (msg) {
-        $scope.toDel = msg;
-        console.log('gonna del...' + msg);
-    }
-
-    $scope.showModal = false;
-
-    $scope.showNotes = function () {
-        console.log('showNotes');
-        $scope.showModal = !$scope.showModal;
-    }
 });
 
 app.controller('CreateNewMachineCtrl', function ($scope, $http, $location, $route) {
     $scope.newMachine = {
     };
+
     $scope.createNewMachine = function () {
-        console.log('createNewMachine');
         $http.post('/api/machines', $scope.newMachine).then(function (data) {
-            console.log(data);
             $scope.newMachine = {};
             $("#create-success-alert").css('visibility', 'visible');
-            //$route.reload();
-            //$location.path('/new_machine');
+            $("#create-success-alert").delay(3000).slideUp(500, function(){
+                $("#create-success-alert").css('visibility', 'hidden');
+                $("#create-success-alert").slideDown();
+            });
         }).catch(function(response) {
             console.error('Oops:: ', response.status, response.data);
         })
@@ -107,76 +88,117 @@ app.controller('CreateNewMachineCtrl', function ($scope, $http, $location, $rout
 });
 
 app.controller('EditMachineCtrl', function ($scope, $http, $location, $route, $routeParams) {
-    console.log($routeParams.id);
     $scope.editMachine = {};
+
     _fetch = function () {
-        //, {params:{"type": "serialNumber", "value": $routeParams.id}}
-        $http.get('/api/machines/Serial No./' + $routeParams.id).then(function (data) {
+        $http.get('/api/machines/Serial No./' + $routeParams.serialNumber).then(function (data) {
           $scope.editMachine = data.data[0];
-          console.log($scope.editMachine);
         }).catch(function(response) {
             console.error('Oops:: ', response.status, response.data);
         })
     };
-    _fetch();
+
     $scope.updateMachine = function () {
-        console.log('editMachine');
-        $http.put('/api/machines/' + $routeParams.id, $scope.editMachine).then(function (data) {
-            console.log(data);
-            //$route.reload();
-            $location.path('/');
+        $http.put('/api/machines/' + $routeParams.serialNumber, $scope.editMachine).then(function (data) {
+            $("#create-success-alert").css('visibility', 'visible');
+            $("#create-success-alert").delay(3000).slideUp(500, function(){
+                $("#create-success-alert").css('visibility', 'hidden');
+                $("#create-success-alert").slideDown();
+            });
         }).catch(function(response) {
             console.error('Oops:: ', response.status, response.data);
         })
     }
+
+    _fetch();
 });
 
-app.controller('ListHistoryCtrl', function ($scope, $http, $location, $route, $routeParams) {
-    console.log($routeParams.id);
+app.controller('ListHistoryCtrl', function ($scope, $http, $location, $route, $routeParams,  $timeout) {
+    $scope.toDel = {
+    };
+
     _fetch = function () {
-        //, {params:{"type": "serialNumber", "value": $routeParams.id}}
-        $http.get('/api/history/' + $routeParams.id).then(function (data) {
+        $http.get('/api/history/' + $routeParams.serialNumber).then(function (data) {
           $scope.history = data.data;
-          console.log($scope.history);
         }).catch(function(response) {
             console.error('Oops:: ', response.status, response.data);
         })
     };
+
+    $scope.setDelAim = function (serialNumber, workOrderNumber) {
+        $scope.toDel['serialNumber'] = serialNumber;
+        $scope.toDel['workOrderNumber'] = workOrderNumber;
+    }
+
+    $scope.delHistory = function () {
+        $http.delete('/api/history/' + $scope.toDel['serialNumber'] + '/' + $scope.toDel['workOrderNumber']).then(function (data) {
+            $('#del').modal('toggle');
+            $timeout(function(){
+               // 1 second delay, might not need this long, but it works.
+              $route.reload();
+            }, 500);
+        }).catch(function(response) {
+            console.error('Oops:: ', response.status, response.data);
+        })
+    }
+
     _fetch();
-    // $scope.updateMachine = function () {
-    //     console.log('editMachine');
-    //     $http.put('/api/machines/' + $routeParams.id, $scope.editMachine).then(function (data) {
-    //         console.log(data);
-    //         //$route.reload();
-    //         $location.path('/');
-    //     }).catch(function(response) {
-    //         console.error('Oops:: ', response.status, response.data);
-    //     })
-    // }
 });
 
 app.controller('CreateHistoryCtrl', function ($scope, $http, $location, $route, $routeParams) {
-    console.log($routeParams.id);
     $scope.newHistory = {
-        serialNumber : $routeParams.id
+        serialNumber : $routeParams.serialNumber
     };
+
     $scope.createNewHistory = function () {
-        console.log('createNewHistory');
         $http.post('/api/history', $scope.newHistory).then(function (data) {
-            console.log(data);
             $scope.newHistory = {
-                serialNumber : $routeParams.id
+                serialNumber : $routeParams.serialNumber
             };
             $("#create-success-alert").css('visibility', 'visible');
-            //$route.reload();
-            //$location.path('/new_machine');
+            $("#create-success-alert").delay(3000).slideUp(500, function(){
+                $("#create-success-alert").css('visibility', 'hidden');
+                $("#create-success-alert").slideDown();
+            });
         }).catch(function(response) {
             console.error('Oops:: ', response.status, response.data);
         })
     }
 });
 
+app.controller('EditHistoryCtrl', function ($scope, $http, $location, $route, $routeParams) {
+    $scope.history = {
+        serialNumber : $routeParams.serialNumber,
+        workOrderNumber : $routeParams.workOrderNumber
+    };
+
+    _fetch = function () {
+        $http.get('/api/history/'+ $routeParams.serialNumber + '/' + $routeParams.workOrderNumber).then(function (data) {
+            $scope.history = data.data;
+        }).catch(function(response) {
+            console.error('Oops:: ', response.status, response.data);
+        })
+    };
+
+    $scope.updateHistory = function () {
+        $http.put('/api/history', $scope.history).then(function (data) {
+            $("#create-success-alert").css('visibility', 'visible');
+            $("#create-success-alert").delay(3000).slideUp(500, function(){
+                $("#create-success-alert").css('visibility', 'hidden');
+                $("#create-success-alert").slideDown();
+            });
+        }).catch(function(response) {
+            console.error('Oops:: ', response.status, response.data);
+        })
+    }
+
+    _fetch();
+});
+
+////////////////////////////////////////
+
 function toggleSearchValueInput (mode) {
+  $('#searchValueInput').val('');
   $('#searchValueInput').prop('disabled', mode);
   return false;
 }

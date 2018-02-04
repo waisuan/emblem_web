@@ -36,6 +36,11 @@ td {
     visibility: hidden;
 }
 
+#notes-area {
+    width: 100%;
+    resize: none;
+}
+
 /*.container {
     background-color: red;
 }*/

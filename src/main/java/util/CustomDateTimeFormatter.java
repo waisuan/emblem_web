@@ -11,18 +11,18 @@ import java.util.Date;
 
 public class CustomDateTimeFormatter {
   private final static DateFormat inputFormat = new SimpleDateFormat("EEE MMM dd HH:mm:ss zzz yyyy");
-  private final static DateFormat formatter = new SimpleDateFormat("MM/dd/yyyy");
+  private final static DateFormat formatter = new SimpleDateFormat("MM/dd/yyyy HH:mm");
   private final static DateTimeFormatter dtf = DateTimeFormatter.ofPattern("MM/dd/yyyy");
 
   public static String formatDate(String input) {
-    // if (null == input || input.equals(""))
-    // return input;
-    //
-    // try {
-    // return formatter.format(inputFormat.parse(input));
-    // } catch (ParseException e) {
-    // e.printStackTrace();
-    // }
+    if (null == input || input.equals(""))
+      return input;
+
+    try {
+      return formatter.format(inputFormat.parse(input));
+    } catch (ParseException e) {
+      e.printStackTrace();
+    }
 
     return input;
   }
@@ -55,7 +55,7 @@ public class CustomDateTimeFormatter {
       return null;
 
     try {
-      Date date = inputFormat.parse(input);
+      Date date = formatter.parse(input);
       return date;
     } catch (ParseException e) {
       e.printStackTrace();

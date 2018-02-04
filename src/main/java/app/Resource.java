@@ -22,14 +22,6 @@ public class Resource {
 
   // https://github.com/shekhargulati/todoapp-spark/blob/master/src/main/resources/public/index.html
   private void setupEndpoints() {
-    post(API_CONTEXT + "/machines", "application/json", (request, response) -> {
-      System.out.println(request.body());
-      Machine machine = new Gson().fromJson(request.body(), Machine.class);
-      service.insertNewMachine(machine);
-      response.status(201);
-      // response.status(400);
-      return response;
-    }, new JsonTransformer());
 
     get(API_CONTEXT + "/machines/:type/:value", "application/json", (request, response)
 
@@ -39,41 +31,56 @@ public class Resource {
 
     -> service.getAllMachines(), new JsonTransformer());
 
-    // put(API_CONTEXT + "/machines/:id", "application/json",
-    // (request, response) -> service.updateMachine(request.params(":id"), request.body()), new JsonTransformer());
-
-    put(API_CONTEXT + "/machines/:id", "application/json", (request, response) -> {
-      System.out.println(request.params(":id"));
-      System.out.println(request.body());
+    post(API_CONTEXT + "/machines", "application/json", (request, response) -> {
       Machine machine = new Gson().fromJson(request.body(), Machine.class);
-      service.updateMachine(request.params(":id"), machine);
+      service.insertMachine(machine);
+      response.status(201);
+      // response.status(400);
+      return response;
+    }, new JsonTransformer());
+
+    put(API_CONTEXT + "/machines/:serialNumber", "application/json", (request, response) -> {
+      Machine machine = new Gson().fromJson(request.body(), Machine.class);
+      service.updateMachine(request.params(":serialNumber"), machine);
       response.status(200);
       // response.status(400);
       return response;
     }, new JsonTransformer());
 
-    delete(API_CONTEXT + "/machines/:id", "application/json", (request, response) -> {
-      System.out.println(request.params(":id"));
-      service.deleteMachine(request.params(":id"));
+    delete(API_CONTEXT + "/machines/:serialNumber", "application/json", (request, response) -> {
+      service.deleteMachine(request.params(":serialNumber"));
       response.status(200);
       // response.status(400);
       return response;
     }, new JsonTransformer());
 
-    // get(API_CONTEXT + "/newMachine", "application/json", (request, response)
-    //
-    // -> service.getAllMachines(), new JsonTransformer());
-    //
+    get(API_CONTEXT + "/history/:serialNumber", "application/json", (request, response)
 
-    get(API_CONTEXT + "/history/:id", "application/json", (request, response)
+    -> service.getHistory(request.params(":serialNumber")), new JsonTransformer());
 
-    -> service.getHistory(request.params(":id")), new JsonTransformer());
+    get(API_CONTEXT + "/history/:serialNumber/:workOrderNumber", "application/json", (request, response)
+
+    -> service.getHistory(request.params(":serialNumber"), request.params(":workOrderNumber")), new JsonTransformer());
 
     post(API_CONTEXT + "/history", "application/json", (request, response) -> {
-      System.out.println(request.body());
       MaintenanceHistory history = new Gson().fromJson(request.body(), MaintenanceHistory.class);
-      service.insertNewHistory(history);
+      service.insertHistory(history);
       response.status(201);
+      // response.status(400);
+      return response;
+    }, new JsonTransformer());
+
+    put(API_CONTEXT + "/history", "application/json", (request, response) -> {
+      MaintenanceHistory history = new Gson().fromJson(request.body(), MaintenanceHistory.class);
+      service.updateHistory(history);
+      response.status(200);
+      // response.status(400);
+      return response;
+    }, new JsonTransformer());
+
+    delete(API_CONTEXT + "/history/:serialNumber/:workOrderNumber", "application/json", (request, response) -> {
+      service.deleteHistory(request.params(":serialNumber"), request.params(":workOrderNumber"));
+      response.status(200);
       // response.status(400);
       return response;
     }, new JsonTransformer());

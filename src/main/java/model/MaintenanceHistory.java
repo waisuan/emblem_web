@@ -2,7 +2,6 @@ package model;
 
 import java.io.Serializable;
 
-
 public class MaintenanceHistory implements Serializable {
 
   private static final long serialVersionUID = -2250561711852519405L;
@@ -11,13 +10,13 @@ public class MaintenanceHistory implements Serializable {
   private String workOrderNumber;
   private String workOrderDate;
   private String actionTaken;
-  private long lastUpdated;
-  private long dateOfCreation;
+  private String lastUpdated;
+  private String dateOfCreation;
   private String reportedBy;
   private String workOrderType;
 
-  public MaintenanceHistory(String serialNumber, String workOrderNumber, String workOrderDate,
-      String actionTaken, String reportedBy, String workOrderType) {
+  public MaintenanceHistory(String serialNumber, String workOrderNumber, String workOrderDate, String actionTaken,
+      String reportedBy, String workOrderType) {
     this.serialNumber = serialNumber;
     this.workOrderNumber = workOrderNumber;
     this.workOrderDate = workOrderDate;
@@ -26,9 +25,8 @@ public class MaintenanceHistory implements Serializable {
     this.workOrderType = workOrderType;
   }
 
-  public MaintenanceHistory(String serialNumber, String workOrderNumber, String workOrderDate,
-      String actionTaken, String reportedBy, String workOrderType, long lastUpdated,
-      long dateOfCreation) {
+  public MaintenanceHistory(String serialNumber, String workOrderNumber, String workOrderDate, String actionTaken,
+      String reportedBy, String workOrderType, String lastUpdated, String dateOfCreation) {
     this.serialNumber = serialNumber;
     this.workOrderNumber = workOrderNumber;
     this.workOrderDate = workOrderDate;
@@ -71,16 +69,16 @@ public class MaintenanceHistory implements Serializable {
     this.actionTaken = actionTaken;
   }
 
-  public long getLastUpdated() {
+  public String getLastUpdated() {
     return lastUpdated;
   }
 
-  public void setLastUpdated(long lastUpdated) {
+  public void setLastUpdated(String lastUpdated) {
     this.lastUpdated = lastUpdated;
   }
 
-  public void updateFields(String serialNumber, String workOrderNumber, String workOrderDate,
-      String actionTaken, String reportedBy, String workOrderType) {
+  public void updateFields(String serialNumber, String workOrderNumber, String workOrderDate, String actionTaken,
+      String reportedBy, String workOrderType) {
     this.serialNumber = serialNumber;
     this.workOrderNumber = workOrderNumber;
     this.workOrderDate = workOrderDate;
@@ -89,11 +87,11 @@ public class MaintenanceHistory implements Serializable {
     this.workOrderType = workOrderType;
   }
 
-  public long getDateOfCreation() {
+  public String getDateOfCreation() {
     return dateOfCreation;
   }
 
-  public void setDateOfCreation(long dateOfCreation) {
+  public void setDateOfCreation(String dateOfCreation) {
     this.dateOfCreation = dateOfCreation;
   }
 
