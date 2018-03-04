@@ -1,72 +1,75 @@
 <form class="container" ng-submit="createNewMachine()">
-  <div class="row">
-    <div class="col-md-12 mb-3">
-      <label for="serialNo">Serial No.</label>
-      <input type="text" class="form-control" id="serialNumber" ng-model="newMachine.serialNumber">
-    </div>
-  </div>
-  <div class="row">
-    <div class="col-md-3 mb-3">
-      <label for="customer">Customer</label>
-      <input type="text" class="form-control" id="customer" ng-model="newMachine.customer">
-    </div>
-    <div class="col-md-3 mb-3">
-      <label for="state">State</label>
-      <input type="text" class="form-control" id="state" ng-model="newMachine.state">
-    </div>
-    <div class="col-md-3 mb-3">
-      <label for="model">Model</label>
-      <input type="text" class="form-control" id="model" ng-model="newMachine.model">
-    </div>
-    <div class="col-md-3 mb-3">
-      <label for="tncDate">TNC Date</label>
-      <input type="text" class="form-control" id="tncDate" placeholder="MM/DD/YYYY" ng-model="newMachine.tncDate">
-    </div>
-</div>
-    <div class="row">
-      <div class="col-md-3 mb-3">
-        <label for="status">Status</label>
-        <input type="text" class="form-control" id="status" ng-model="newMachine.status">
-      </div>
-      <div class="col-md-3 mb-3">
-        <label for="personInCharge">Person in Charge</label>
-        <input type="text" class="form-control" id="personInCharge" ng-model="newMachine.personInCharge">
-      </div>
-      <div class="col-md-3 mb-3">
-        <label for="reportedBy">Reported By</label>
-        <input type="text" class="form-control" id="reportedBy" ng-model="newMachine.reportedBy">
-      </div>
-      <div class="col-md-3 mb-3">
-        <label for="accType">Acount Type</label>
-        <input type="text" class="form-control" id="accountType" ng-model="newMachine.accountType">
-      </div>
-      </div>
-      <div class="row">
-        <div class="col-md-6 mb-3">
-          <label for="ppmDate">PPM Date</label>
-          <input type="text" class="form-control" id="ppmDate" placeholder="MM/DD/YYYY" ng-model="newMachine.ppmDate">
-        </div>
-        <div class="col-md-6 mb-3">
-          <label for="brand">Brand</label>
-          <input type="text" class="form-control" id="brand" ng-model="newMachine.brand">
+    <div class="row form-group">
+        <div class="col-md-12 mb-3">
+            <label for="serialNo">Serial No.</label>
+            <input type="text" class="form-control" id="serialNumber" ng-model="newMachine.serialNumber" required>
         </div>
     </div>
     <div class="row">
-      <div class="col-md-12 mb-3">
-        <label for="additionalNotes">Additional Notes</label>
-        <textarea class="form-control" rows="5" id="additionalNotes" ng-model="newMachine.additionalNotes"></textarea>
-      </div>
-  </div>
-  <div class="row">
-      <div class="col-md-12">
-          <button class="btn btn-primary submit-btn" type="submit">Add</button>
-      </div>
-  </div>
-  <div class="row">
-      <div class="col-md-12">
-          <div id="create-success-alert" class="alert alert-success fade show text-center" role="alert">
-              Success!
-          </div>
-      </div>
-  </div>
+        <div class="col-md-3 mb-3">
+            <label for="customer">Customer</label>
+            <input type="text" class="form-control" id="customer" ng-model="newMachine.customer">
+        </div>
+        <div class="col-md-3 mb-3">
+            <label for="state">State</label>
+            <input type="text" class="form-control" id="state" ng-model="newMachine.state">
+        </div>
+        <div class="col-md-3 mb-3">
+            <label for="model">Model</label>
+            <input type="text" class="form-control" id="model" ng-model="newMachine.model">
+        </div>
+        <div class="form-group col-md-3 mb-3">
+            <label for="tncDate">TNC Date</label>
+            <input type="text" class="form-control" id="tncDate" placeholder="MM/DD/YYYY" ng-model="newMachine.tncDate" pattern="\d{2}/\d{2}/\d{4}" pattern-notification="Dates must be in MM/DD/YYYY format">
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-3 mb-3">
+            <label for="status">Status</label>
+            <input type="text" class="form-control" id="status" ng-model="newMachine.status">
+        </div>
+        <div class="col-md-3 mb-3">
+            <label for="personInCharge">Person in Charge</label>
+            <input type="text" class="form-control" id="personInCharge" ng-model="newMachine.personInCharge">
+        </div>
+        <div class="col-md-3 mb-3">
+            <label for="reportedBy">Reported By</label>
+            <input type="text" class="form-control" id="reportedBy" ng-model="newMachine.reportedBy">
+        </div>
+        <div class="col-md-3 mb-3">
+            <label for="accType">Acount Type</label>
+            <input type="text" class="form-control" id="accountType" ng-model="newMachine.accountType">
+        </div>
+    </div>
+    <div class="row">
+        <div class="form-group col-md-6 mb-3">
+            <label for="ppmDate">PPM Date</label>
+            <input type="text" class="form-control" id="ppmDate" placeholder="MM/DD/YYYY" ng-model="newMachine.ppmDate" pattern="\d{2}/\d{2}/\d{4}" pattern-notification="Dates must be in MM/DD/YYYY format">
+        </div>
+        <div class="col-md-6 mb-3">
+            <label for="brand">Brand</label>
+            <input type="text" class="form-control" id="brand" ng-model="newMachine.brand">
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12 mb-3">
+            <label for="additionalNotes">Additional Notes</label>
+            <textarea class="form-control" rows="5" id="additionalNotes" ng-model="newMachine.additionalNotes"></textarea>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <button class="btn btn-primary submit-btn" type="submit">Add</button>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <div id="create-success-alert" class="alert alert-success fade show text-center" role="alert">
+                <strong>Success!</strong>
+            </div>
+            <div id="create-fail-alert" class="alert alert-danger fade show text-center" role="alert">
+                <strong>Oops!</strong> Something went wrong. Please try again.
+            </div>
+        </div>
+    </div>
 </form>

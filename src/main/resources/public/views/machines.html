@@ -1,100 +1,100 @@
 <main role="main" class="container">
-  <div class="row starter-template">
-      <div class="col-md-12">
-        <form role="form" ng-submit="searchMachine()">
-          <div class="input-group">
-                <div class="input-group-btn">
-                  <button type="button" class="btn btn-dark dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+    <div class="row starter-template">
+        <div class="col-md-12">
+            <form role="form" ng-submit="searchMachine()">
+                <div class="input-group">
+                    <div class="input-group-btn">
+                        <button type="button" class="btn btn-dark dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                     {{searchType}}
                   </button>
-                  <div class="dropdown-menu">
-                    <a class="dropdown-item" onclick="toggleSearchValueInput(true)" ng-click="searchType = 'All'">All</a>
-                    <a class="dropdown-item" onclick="toggleSearchValueInput(false)" ng-click="searchType = 'Serial No.'">Serial No.</a>
-                    <a class="dropdown-item" onclick="toggleSearchValueInput(false)" ng-click="searchType = 'State'">State</a>
-                    <a class="dropdown-item" onclick="toggleSearchValueInput(false)" ng-click="searchType = 'Model'">Model</a>
-                    <a class="dropdown-item" onclick="toggleSearchValueInput(false)" ng-click="searchType = 'T&C Date'">TNC Date</a>
-                    <a class="dropdown-item" onclick="toggleSearchValueInput(false)" ng-click="searchType = 'Customer'">Customer</a>
-                    <a class="dropdown-item" onclick="toggleSearchValueInput(false)" ng-click="searchType = 'Status'">Status</a>
-                    <a class="dropdown-item" onclick="toggleSearchValueInput(false)" ng-click="searchType = 'Acc. Type'">Account Type</a>
-                    <a class="dropdown-item" onclick="toggleSearchValueInput(false)" ng-click="searchType = 'Brand'">Brand</a>
-                    <a class="dropdown-item" onclick="toggleSearchValueInput(false)" ng-click="searchType = 'Person In Charge'">Person in Charge</a>
-                    <a class="dropdown-item" onclick="toggleSearchValueInput(false)" ng-click="searchType = 'Reported By'">Reported By</a>
-                  </div>
+                        <div class="dropdown-menu">
+                            <a class="dropdown-item" onclick="toggleSearchValueInput(true)" ng-click="searchType = 'All'">All</a>
+                            <a class="dropdown-item" onclick="toggleSearchValueInput(false)" ng-click="searchType = 'Serial No.'">Serial No.</a>
+                            <a class="dropdown-item" onclick="toggleSearchValueInput(false)" ng-click="searchType = 'State'">State</a>
+                            <a class="dropdown-item" onclick="toggleSearchValueInput(false)" ng-click="searchType = 'Model'">Model</a>
+                            <a class="dropdown-item" onclick="toggleSearchValueInput(false)" ng-click="searchType = 'T&C Date'">TNC Date</a>
+                            <a class="dropdown-item" onclick="toggleSearchValueInput(false)" ng-click="searchType = 'Customer'">Customer</a>
+                            <a class="dropdown-item" onclick="toggleSearchValueInput(false)" ng-click="searchType = 'Status'">Status</a>
+                            <a class="dropdown-item" onclick="toggleSearchValueInput(false)" ng-click="searchType = 'Acc. Type'">Account Type</a>
+                            <a class="dropdown-item" onclick="toggleSearchValueInput(false)" ng-click="searchType = 'Brand'">Brand</a>
+                            <a class="dropdown-item" onclick="toggleSearchValueInput(false)" ng-click="searchType = 'Person In Charge'">Person in Charge</a>
+                            <a class="dropdown-item" onclick="toggleSearchValueInput(false)" ng-click="searchType = 'Reported By'">Reported By</a>
+                        </div>
+                    </div>
+                    <input id='searchValueInput' type="text" class="form-control" aria-label="Text input with dropdown button" ng-model="searchValue">
                 </div>
-                <input id='searchValueInput' type="text" class="form-control" aria-label="Text input with dropdown button" ng-model="searchValue">
-              </div>
-          <button type="submit" class="search-btn btn btn-primary float-right">Search</button>
-        </form>
+                <button type="submit" class="search-btn btn btn-primary float-right">Search</button>
+            </form>
+        </div>
     </div>
-  </div>
 
     <div class="row">
         <div class="col-xl-12">
             <table class="table table-bordered machines-tbl">
-              <thead>
-                <tr>
-                  <th data-sortable="true">Serial No.</th>
-                  <th>State</th>
-                  <th>Model</th>
-                  <th>TNC Date</th>
-                  <th>Customer</th>
-                  <th>Status</th>
-                  <th>Account Type</th>
-                  <th>Brand</th>
-                  <th>Person in Charge</th>
-                  <th>Reported By</th>
-                  <th>Created On</th>
-                  <th>Last Updated On</th>
-                  <th>Action</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr ng-repeat="machine in machines">
-                    <td>
-                        {{machine.serialNumber}}
-                    </td>
-                    <td>
-                        {{machine.state}}
-                    </td>
-                    <td>
-                        {{machine.model}}
-                    </td>
-                    <td>
-                        {{machine.tncDate}}
-                    </td>
-                    <td>
-                        {{machine.customer}}
-                    </td>
-                    <td>
-                        {{machine.status}}
-                    </td>
-                    <td>
-                        {{machine.accountType}}
-                    </td>
-                    <td>
-                        {{machine.brand}}
-                    </td>
-                    <td>
-                        {{machine.personInCharge}}
-                    </td>
-                    <td>
-                        {{machine.reportedBy}}
-                    </td>
-                    <td>
-                        {{machine.dateOfCreation}}
-                    </td>
-                    <td>
-                        {{machine.lastUpdated}}
-                    </td>
-                    <td>
-                      <a href="#/edit_machine/{{machine.serialNumber}}" title="Edit machine"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></a>
-                      <a ng-click="setDelAim( machine.serialNumber )" onclick="return false;" href="#del" data-toggle="modal" data-target="#del" title="Delete machine"><i class="fa fa-times" aria-hidden="true"></i></a>
-                      <a href="#/add_history/{{machine.serialNumber}}" title="Add history"><i class="fa fa-plus" aria-hidden="true"></i></a>
-                      <a href="#/history/{{machine.serialNumber}}" title="Show history"><i class="fa fa-history" aria-hidden="true"></i></a>
-                      <a ng-click="showNotes( machine.additionalNotes )" onclick="return false;" href="#notes" data-toggle="modal" title="Show Notes"><i class="fa fa-sticky-note" aria-hidden="true"></i></a>
-                    </td>
-                </tr>
-              </tbody>
+                <thead>
+                    <tr>
+                        <th data-sortable="true">Serial No.</th>
+                        <th>State</th>
+                        <th>Model</th>
+                        <th>TNC Date</th>
+                        <th>Customer</th>
+                        <th>Status</th>
+                        <th>Account Type</th>
+                        <th>Brand</th>
+                        <th>Person in Charge</th>
+                        <th>Reported By</th>
+                        <th>Created On</th>
+                        <th>Last Updated On</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr ng-repeat="machine in machines">
+                        <td>
+                            {{machine.serialNumber}}
+                        </td>
+                        <td>
+                            {{machine.state}}
+                        </td>
+                        <td>
+                            {{machine.model}}
+                        </td>
+                        <td>
+                            {{machine.tncDate}}
+                        </td>
+                        <td>
+                            {{machine.customer}}
+                        </td>
+                        <td>
+                            {{machine.status}}
+                        </td>
+                        <td>
+                            {{machine.accountType}}
+                        </td>
+                        <td>
+                            {{machine.brand}}
+                        </td>
+                        <td>
+                            {{machine.personInCharge}}
+                        </td>
+                        <td>
+                            {{machine.reportedBy}}
+                        </td>
+                        <td>
+                            {{machine.dateOfCreation}}
+                        </td>
+                        <td>
+                            {{machine.lastUpdated}}
+                        </td>
+                        <td>
+                            <a href="#/edit_machine/{{machine.serialNumber}}" title="Edit machine"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></a>
+                            <a ng-click="setDelAim( machine.serialNumber )" onclick="return false;" href="#del" data-toggle="modal" data-target="#del" title="Delete machine"><i class="fa fa-times" aria-hidden="true"></i></a>
+                            <a href="#/add_history/{{machine.serialNumber}}" title="Add history"><i class="fa fa-plus" aria-hidden="true"></i></a>
+                            <a href="#/history/{{machine.serialNumber}}" title="Show history"><i class="fa fa-history" aria-hidden="true"></i></a>
+                            <a ng-click="showNotes( machine.additionalNotes )" onclick="return false;" href="#notes" data-toggle="modal" title="Show Notes"><i class="fa fa-sticky-note" aria-hidden="true"></i></a>
+                        </td>
+                    </tr>
+                </tbody>
             </table>
         </div>
     </div>

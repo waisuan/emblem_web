@@ -1,18 +1,18 @@
-.success-true{
+.success-true {
     text-decoration: line-through;
 }
 
 body {
-  padding-top: 5rem;
+    padding-top: 5rem;
 }
 
 .starter-template {
-  /*padding: 3rem 1.5rem;*/
-  text-align: center;
+    /*padding: 3rem 1.5rem;*/
+    text-align: center;
 }
 
 .search-btn {
-  margin: 10px;
+    margin: 10px;
 }
 
 .submit-btn {
@@ -33,13 +33,26 @@ td {
 }
 
 #create-success-alert {
-    visibility: hidden;
+    margin-top: 5px;
+    display: none;
+    /* visibility: hidden; */
+    /* position: absolute;
+    width: 100%; */
+}
+
+#create-fail-alert {
+    margin-top: 5px;
+    display: none;
+    /* visibility: hidden; */
+    /* position: absolute;
+    width: 100%; */
 }
 
 #notes-area {
     width: 100%;
     resize: none;
 }
+
 
 /*.container {
     background-color: red;
