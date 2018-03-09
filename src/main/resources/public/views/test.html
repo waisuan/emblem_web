@@ -1,0 +1,64 @@
+<div class="test">
+    <div class="row">
+        <div class="col-xl-12">
+            <table st-table="machines" class="table table-striped">
+                <thead>
+                    <tr>
+                        <th data-sortable="true">Serial No.</th>
+                        <th>State</th>
+                        <th>Model</th>
+                        <th>TNC Date</th>
+                        <th>Customer</th>
+                        <th>Status</th>
+                        <th>Account Type</th>
+                        <th>Brand</th>
+                        <th>Person in Charge</th>
+                        <th>Reported By</th>
+                        <th>Created On</th>
+                        <th>Last Updated On</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr ng-repeat="machine in machines">
+                        <td>
+                            {{machine.serialNumber}}
+                        </td>
+                        <td>
+                            {{machine.state}}
+                        </td>
+                        <td>
+                            {{machine.model}}
+                        </td>
+                        <td>
+                            {{machine.tncDate}}
+                        </td>
+                        <td>
+                            {{machine.customer}}
+                        </td>
+                        <td>
+                            {{machine.status}}
+                        </td>
+                        <td>
+                            {{machine.accountType}}
+                        </td>
+                        <td>
+                            {{machine.brand}}
+                        </td>
+                        <td>
+                            {{machine.personInCharge}}
+                        </td>
+                        <td>
+                            {{machine.reportedBy}}
+                        </td>
+                        <td>
+                            {{machine.dateOfCreation}}
+                        </td>
+                        <td>
+                            {{machine.lastUpdated}}
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

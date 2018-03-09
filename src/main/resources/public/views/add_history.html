@@ -6,13 +6,13 @@
         </div>
     </div>
     <div class="row">
-        <div class="col-md-3 mb-3">
+        <div class="form-group col-md-3 mb-3">
             <label for="workOrderNumber">Work Order No.</label>
-            <input type="text" class="form-control" id="workOrderNumber" ng-model="newHistory.workOrderNumber">
+            <input type="text" class="form-control" id="workOrderNumber" ng-model="newHistory.workOrderNumber" required>
         </div>
-        <div class="col-md-3 mb-3">
+        <div class="form-group col-md-3 mb-3">
             <label for="workOrderDate">Work Order Date</label>
-            <input type="text" class="form-control" id="workOrderDate" placeholder="MM/DD/YYYY" ng-model="newHistory.workOrderDate">
+            <input type="text" class="form-control" id="workOrderDate" placeholder="MM/DD/YYYY" ng-model="newHistory.workOrderDate" pattern="\d{2}/\d{2}/\d{4}" pattern-notification="Dates must be in MM/DD/YYYY format">
         </div>
         <div class="col-md-3 mb-3">
             <label for="workOrderType">Work Order Type</label>
@@ -38,6 +38,9 @@
         <div class="col-md-12">
             <div id="create-success-alert" class="alert alert-success fade show text-center" role="alert">
                 Success!
+            </div>
+            <div id="create-fail-alert" class="alert alert-danger fade show text-center" role="alert">
+                <strong>Oops!</strong> Something went wrong. Please try again.
             </div>
         </div>
     </div>

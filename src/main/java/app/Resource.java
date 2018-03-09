@@ -32,10 +32,10 @@ public class Resource {
     -> service.getAllMachines(), new JsonTransformer());
 
     post(API_CONTEXT + "/machines", "application/json", (request, response) -> {
-      // Machine machine = new Gson().fromJson(request.body(), Machine.class);
-      // service.insertMachine(machine);
-      // response.status(201);
-      response.status(400);
+      Machine machine = new Gson().fromJson(request.body(), Machine.class);
+      service.insertMachine(machine);
+      response.status(201);
+      // response.status(400);
       return response;
     }, new JsonTransformer());
 

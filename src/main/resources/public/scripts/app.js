@@ -3,7 +3,8 @@ var app = angular.module('emblem', [
     'ngResource',
     'ngSanitize',
     'ngRoute',
-    'bootstrap.angular.validation'
+    'bootstrap.angular.validation',
+    'smart-table'
 ]);
 
 app.config(['$locationProvider', function($locationProvider) {
@@ -38,6 +39,9 @@ app.config(function($routeProvider) {
     }).when('/edit_history/:serialNumber/:workOrderNumber', {
         templateUrl: 'views/edit_history.html',
         controller: 'EditHistoryCtrl'
+    }).when('/test', {
+        templateUrl: 'views/test.html',
+        controller: 'ListMachinesCtrl'
     }).otherwise({
         redirectTo: '/'
     })
@@ -47,6 +51,9 @@ app.controller('ListMachinesCtrl', function($scope, $http, $location, $route, $t
     $scope.searchType = 'Serial No.';
     $scope.toDel = '';
     $scope.notes = '';
+    $scope.options = [{actual: 'All', internal: '$'},{actual: 'Serial No.', internal: 'serialNumber'}, {actual: 'Status', internal: 'status'}];
+    $scope.searchTypeOption = $scope.options[0].actual;
+    $scope.machineFilter = {$: undefined}; // initial non-filtering value
 
     $http.get('/api/machines').then(function(data) {
         $scope.machines = data.data;
@@ -60,15 +67,43 @@ app.controller('ListMachinesCtrl', function($scope, $http, $location, $route, $t
         $scope.notes = notes;
     }
 
-    $scope.searchMachine = function() {
-        $http.get('/api/machines/' + $scope.searchType + '/' + $scope.searchValue, {
-            params: {
-                "type": $scope.searchType,
-                "value": $scope.searchValue
+    $scope.toggleSearchVal = function(searchType) {
+        $scope.searchType = searchType;
+        $('#searchValueInput').val('');
+        if (searchType == 'All') {
+            $('#searchValueInput').prop('disabled', true);
+            $('#machineSearchBtn').prop('disabled', false);
+        } else {
+            $('#searchValueInput').prop('disabled', false);
+            $('#machineSearchBtn').prop('disabled', true);
+        }
+    }
+
+    $scope.toggleSearchBtn = function() {
+        var isDisabled = (($scope.searchValue == null || $scope.searchValue == '') && $scope.searchType != 'All') ? true : false;
+        $('#machineSearchBtn').prop('disabled', isDisabled);
+    }
+
+    $scope.setMachineSearchFilter = function() {
+        $scope.machineFilter = {};
+        for (i = 0; i < $scope.options.length; i++) {
+            if ($scope.options[i].actual == $scope.searchTypeOption) {
+                $scope.machineFilter[$scope.options[i].internal || '$'] = $scope.searchValue;
+                break;
             }
-        }).then(function(data) {
-            $scope.machines = data.data;
-        })
+        }
+    }
+
+    $scope.searchMachine = function() {
+        if ($scope.searchType == 'All') {
+            $http.get('/api/machines').then(function(data) {
+                $scope.machines = data.data;
+            })
+        } else {
+            $http.get('/api/machines/' + $scope.searchType + '/' + $scope.searchValue).then(function(data) {
+                $scope.machines = data.data;
+            })
+        }
     }
 
     $scope.delMachine = function() {
@@ -90,20 +125,20 @@ app.controller('CreateNewMachineCtrl', function($scope, $http, $location, $route
     $scope.createNewMachine = function() {
         $http.post('/api/machines', $scope.newMachine).then(function(data) {
             $scope.newMachine = {};
-            $("#create-success-alert").css('display', 'block');
-            $("#create-success-alert").delay(3000).slideUp(500, function() {
-                $("#create-success-alert").css('display', 'none');
+            $('#create-success-alert').css('display', 'block');
+            $('#create-success-alert').delay(3000).slideUp(500, function() {
+                $('#create-success-alert').css('display', 'none');
             });
-            // $("#create-success-alert").css('visibility', 'visible');
-            // $("#create-success-alert").delay(3000).slideUp(500, function(){
-            //     $("#create-success-alert").css('visibility', 'hidden');
-            //     $("#create-success-alert").slideDown();
+            // $('#create-success-alert').css('visibility', 'visible');
+            // $('#create-success-alert').delay(3000).slideUp(500, function(){
+            //     $('#create-success-alert').css('visibility', 'hidden');
+            //     $('#create-success-alert').slideDown();
             // });
         }).catch(function(response) {
             console.error('Oops:: ', response.status, response.data);
-            $("#create-fail-alert").css('display', 'block');
-            $("#create-fail-alert").delay(5000).slideUp(500, function() {
-                $("#create-fail-alert").css('display', 'none');
+            $('#create-fail-alert').css('display', 'block');
+            $('#create-fail-alert').delay(5000).slideUp(500, function() {
+                $('#create-fail-alert').css('display', 'none');
             });
         })
     }
@@ -122,13 +157,16 @@ app.controller('EditMachineCtrl', function($scope, $http, $location, $route, $ro
 
     $scope.updateMachine = function() {
         $http.put('/api/machines/' + $routeParams.serialNumber, $scope.editMachine).then(function(data) {
-            $("#create-success-alert").css('visibility', 'visible');
-            $("#create-success-alert").delay(3000).slideUp(500, function() {
-                $("#create-success-alert").css('visibility', 'hidden');
-                $("#create-success-alert").slideDown();
+            $('#create-success-alert').css('display', 'block');
+            $('#create-success-alert').delay(3000).slideUp(500, function() {
+                $('#create-success-alert').css('display', 'none');
             });
         }).catch(function(response) {
             console.error('Oops:: ', response.status, response.data);
+            $('#create-fail-alert').css('display', 'block');
+            $('#create-fail-alert').delay(5000).slideUp(500, function() {
+                $('#create-fail-alert').css('display', 'none');
+            });
         })
     }
 
@@ -176,13 +214,16 @@ app.controller('CreateHistoryCtrl', function($scope, $http, $location, $route, $
             $scope.newHistory = {
                 serialNumber: $routeParams.serialNumber
             };
-            $("#create-success-alert").css('visibility', 'visible');
-            $("#create-success-alert").delay(3000).slideUp(500, function() {
-                $("#create-success-alert").css('visibility', 'hidden');
-                $("#create-success-alert").slideDown();
+            $('#create-success-alert').css('display', 'block');
+            $('#create-success-alert').delay(3000).slideUp(500, function() {
+                $('#create-success-alert').css('display', 'none');
             });
         }).catch(function(response) {
             console.error('Oops:: ', response.status, response.data);
+            $('#create-fail-alert').css('display', 'block');
+            $('#create-fail-alert').delay(5000).slideUp(500, function() {
+                $('#create-fail-alert').css('display', 'none');
+            });
         })
     }
 });
@@ -203,23 +244,20 @@ app.controller('EditHistoryCtrl', function($scope, $http, $location, $route, $ro
 
     $scope.updateHistory = function() {
         $http.put('/api/history', $scope.history).then(function(data) {
-            $("#create-success-alert").css('visibility', 'visible');
-            $("#create-success-alert").delay(3000).slideUp(500, function() {
-                $("#create-success-alert").css('visibility', 'hidden');
-                $("#create-success-alert").slideDown();
+            $('#create-success-alert').css('display', 'block');
+            $('#create-success-alert').delay(3000).slideUp(500, function() {
+                $('#create-success-alert').css('display', 'none');
             });
         }).catch(function(response) {
             console.error('Oops:: ', response.status, response.data);
+            $('#create-fail-alert').css('display', 'block');
+            $('#create-fail-alert').delay(5000).slideUp(500, function() {
+                $('#create-fail-alert').css('display', 'none');
+            });
         })
     }
 
     _fetch();
 });
 
-////////////////////////////////////////
-
-function toggleSearchValueInput(mode) {
-    $('#searchValueInput').val('');
-    $('#searchValueInput').prop('disabled', mode);
-    return false;
-}
+///////////////////////////jQuery stuff ////////////////////////////////////////

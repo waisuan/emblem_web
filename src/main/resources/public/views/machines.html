@@ -1,36 +1,43 @@
-<main role="main" class="container">
-    <div class="row starter-template">
-        <div class="col-md-12">
-            <form role="form" ng-submit="searchMachine()">
-                <div class="input-group">
-                    <div class="input-group-btn">
-                        <button type="button" class="btn btn-dark dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                    {{searchType}}
-                  </button>
-                        <div class="dropdown-menu">
-                            <a class="dropdown-item" onclick="toggleSearchValueInput(true)" ng-click="searchType = 'All'">All</a>
-                            <a class="dropdown-item" onclick="toggleSearchValueInput(false)" ng-click="searchType = 'Serial No.'">Serial No.</a>
-                            <a class="dropdown-item" onclick="toggleSearchValueInput(false)" ng-click="searchType = 'State'">State</a>
-                            <a class="dropdown-item" onclick="toggleSearchValueInput(false)" ng-click="searchType = 'Model'">Model</a>
-                            <a class="dropdown-item" onclick="toggleSearchValueInput(false)" ng-click="searchType = 'T&C Date'">TNC Date</a>
-                            <a class="dropdown-item" onclick="toggleSearchValueInput(false)" ng-click="searchType = 'Customer'">Customer</a>
-                            <a class="dropdown-item" onclick="toggleSearchValueInput(false)" ng-click="searchType = 'Status'">Status</a>
-                            <a class="dropdown-item" onclick="toggleSearchValueInput(false)" ng-click="searchType = 'Acc. Type'">Account Type</a>
-                            <a class="dropdown-item" onclick="toggleSearchValueInput(false)" ng-click="searchType = 'Brand'">Brand</a>
-                            <a class="dropdown-item" onclick="toggleSearchValueInput(false)" ng-click="searchType = 'Person In Charge'">Person in Charge</a>
-                            <a class="dropdown-item" onclick="toggleSearchValueInput(false)" ng-click="searchType = 'Reported By'">Reported By</a>
-                        </div>
+<main role="main">
+    <!-- class="container" -->
+    <div class="container">
+        <div class="row starter-template">
+            <div class="col-md-12">
+                <form role="form" ng-submit="searchMachine()">
+                    <div class="input-group">
+                        <!-- <div class="input-group-btn">
+                            <button type="button" class="btn btn-dark dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                {{searchType}}
+                            </button>
+                            <div class="dropdown-menu">
+                                <a class="dropdown-item" ng-click="toggleSearchVal('All')">All</a>
+                                <a class="dropdown-item" ng-click="toggleSearchVal('Serial No.')">Serial No.</a>
+                                <a class="dropdown-item" ng-click="toggleSearchVal('State')">State</a>
+                                <a class="dropdown-item" ng-click="toggleSearchVal('Model')">Model</a>
+                                <a class="dropdown-item" ng-click="toggleSearchVal('T&C Date')">TNC Date</a>
+                                <a class="dropdown-item" ng-click="toggleSearchVal('Customer')">Customer</a>
+                                <a class="dropdown-item" ng-click="toggleSearchVal('Status')">Status</a>
+                                <a class="dropdown-item" ng-click="toggleSearchVal('Acc. Type')">Account Type</a>
+                                <a class="dropdown-item" ng-click="toggleSearchVal('Brand')">Brand</a>
+                                <a class="dropdown-item" ng-click="toggleSearchVal('Person In Charge')">Person in Charge</a>
+                                <a class="dropdown-item" ng-click="toggleSearchVal('Reported By')">Reported By</a>
+                            </div>
+                        </div> -->
+                        <select ng-model="searchTypeOption" ng-options="opt.actual as opt.actual for opt in options" ng-change="setMachineSearchFilter()">
+                            <!-- <option value="">All</option> -->
+                        </select>
+                        <input id="searchValueInput" type="text" class="form-control" placeholder="What are you looking for?" ng-model="searchValue" ng-change="setMachineSearchFilter()">
+                        <!-- ng-change="toggleSearchBtn()" -->
                     </div>
-                    <input id='searchValueInput' type="text" class="form-control" aria-label="Text input with dropdown button" ng-model="searchValue">
-                </div>
-                <button type="submit" class="search-btn btn btn-primary float-right">Search</button>
-            </form>
+                    <!-- <button id="machineSearchBtn" type="submit" class="search-btn btn btn-primary" disabled>Search</button> -->
+                </form>
+            </div>
         </div>
     </div>
 
     <div class="row">
-        <div class="col-xl-12">
-            <table class="table table-bordered machines-tbl">
+        <div class="col-md-12">
+            <table st-table="machines" class="table table-bordered main-tbl">
                 <thead>
                     <tr>
                         <th data-sortable="true">Serial No.</th>
@@ -49,7 +56,7 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <tr ng-repeat="machine in machines">
+                    <tr ng-repeat="machine in machines | filter:machineFilter">
                         <td>
                             {{machine.serialNumber}}
                         </td>
