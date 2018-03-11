@@ -4,7 +4,8 @@ var app = angular.module('emblem', [
     'ngSanitize',
     'ngRoute',
     'bootstrap.angular.validation',
-    'smart-table'
+    'smart-table',
+    'ui.bootstrap'
 ]);
 
 app.config(['$locationProvider', function($locationProvider) {
@@ -48,41 +49,49 @@ app.config(function($routeProvider) {
 });
 
 app.controller('ListMachinesCtrl', function($scope, $http, $location, $route, $timeout) {
-    $scope.searchType = 'Serial No.';
+    // $scope.searchType = 'Serial No.';
     $scope.toDel = '';
     $scope.notes = '';
-    $scope.options = [{actual: 'All', internal: '$'},{actual: 'Serial No.', internal: 'serialNumber'}, {actual: 'Status', internal: 'status'}];
+    $scope.options = [{actual: 'All', internal: '$'}, {actual: 'Serial No.', internal: 'serialNumber'}, {actual: 'State', internal: 'state'},
+                      {actual: 'Model', internal: 'model'}, {actual: 'TNC Date', internal: 'tncDate'}, {actual: 'PPM Date', internal: 'ppmDate'},
+                      {actual: 'Customer', internal: 'customer'}, {actual: 'Status', internal: 'status'}, {actual: 'Account Type', internal: 'accountType'},
+                      {actual: 'Brand', internal: 'brand'}, {actual: 'Person In Charge', internal: 'personInCharge'}, {actual: 'Reported By', internal: 'reportedBy'},
+                      {actual: 'Additional Notes', internal: 'additionalNotes'}, {actual: 'Created On', internal: 'dateOfCreation'}, {actual: 'Last Updated On', internal: 'lastUpdated'}];
+    // $scope.headers = $scope.options.slice(1);
     $scope.searchTypeOption = $scope.options[0].actual;
     $scope.machineFilter = {$: undefined}; // initial non-filtering value
+    $scope.machinesPerPage = 10;
+    $scope.currentPage = 1;
+    $scope.pagesToDisplay = 5;
 
     $http.get('/api/machines').then(function(data) {
         $scope.machines = data.data;
     })
 
-    $scope.setDelAim = function(serialNumber) {
-        $scope.toDel = serialNumber;
+    $scope.setDelAim = function(machine) {
+        $scope.toDel = machine;
     }
 
     $scope.showNotes = function(notes) {
         $scope.notes = notes;
     }
 
-    $scope.toggleSearchVal = function(searchType) {
-        $scope.searchType = searchType;
-        $('#searchValueInput').val('');
-        if (searchType == 'All') {
-            $('#searchValueInput').prop('disabled', true);
-            $('#machineSearchBtn').prop('disabled', false);
-        } else {
-            $('#searchValueInput').prop('disabled', false);
-            $('#machineSearchBtn').prop('disabled', true);
-        }
-    }
+    // $scope.toggleSearchVal = function(searchType) {
+    //     $scope.searchType = searchType;
+    //     $('#searchValueInput').val('');
+    //     if (searchType == 'All') {
+    //         $('#searchValueInput').prop('disabled', true);
+    //         $('#machineSearchBtn').prop('disabled', false);
+    //     } else {
+    //         $('#searchValueInput').prop('disabled', false);
+    //         $('#machineSearchBtn').prop('disabled', true);
+    //     }
+    // }
 
-    $scope.toggleSearchBtn = function() {
-        var isDisabled = (($scope.searchValue == null || $scope.searchValue == '') && $scope.searchType != 'All') ? true : false;
-        $('#machineSearchBtn').prop('disabled', isDisabled);
-    }
+    // $scope.toggleSearchBtn = function() {
+    //     var isDisabled = (($scope.searchValue == null || $scope.searchValue == '') && $scope.searchType != 'All') ? true : false;
+    //     $('#machineSearchBtn').prop('disabled', isDisabled);
+    // }
 
     $scope.setMachineSearchFilter = function() {
         $scope.machineFilter = {};
@@ -94,28 +103,39 @@ app.controller('ListMachinesCtrl', function($scope, $http, $location, $route, $t
         }
     }
 
-    $scope.searchMachine = function() {
-        if ($scope.searchType == 'All') {
-            $http.get('/api/machines').then(function(data) {
-                $scope.machines = data.data;
-            })
-        } else {
-            $http.get('/api/machines/' + $scope.searchType + '/' + $scope.searchValue).then(function(data) {
-                $scope.machines = data.data;
-            })
-        }
-    }
+    $scope.changePage = function() {}
+
+    // $scope.searchMachine = function() {
+    //     if ($scope.searchType == 'All') {
+    //         $http.get('/api/machines').then(function(data) {
+    //             $scope.machines = data.data;
+    //         })
+    //     } else {
+    //         $http.get('/api/machines/' + $scope.searchType + '/' + $scope.searchValue).then(function(data) {
+    //             $scope.machines = data.data;
+    //         })
+    //     }
+    // }
 
     $scope.delMachine = function() {
-        $http.delete('/api/machines/' + $scope.toDel).then(function(data) {
+        var index = $scope.machines.indexOf($scope.toDel);
+        if (index === -1) {
             $('#del').modal('toggle');
             $timeout(function() {
                 // 1 second delay, might not need this long, but it works.
                 $route.reload();
             }, 1000);
+        }
+
+        var serialNumber = $scope.machines[index].serialNumber;
+
+        $http.delete('/api/machines/' + serialNumber).then(function(data) {
+            $('#del').modal('toggle');
+            $scope.machines.splice(index, 1);
         }).catch(function(response) {
             console.error('Oops:: ', response.status, response.data);
         })
+        return;
     }
 });
 
@@ -129,11 +149,6 @@ app.controller('CreateNewMachineCtrl', function($scope, $http, $location, $route
             $('#create-success-alert').delay(3000).slideUp(500, function() {
                 $('#create-success-alert').css('display', 'none');
             });
-            // $('#create-success-alert').css('visibility', 'visible');
-            // $('#create-success-alert').delay(3000).slideUp(500, function(){
-            //     $('#create-success-alert').css('visibility', 'hidden');
-            //     $('#create-success-alert').slideDown();
-            // });
         }).catch(function(response) {
             console.error('Oops:: ', response.status, response.data);
             $('#create-fail-alert').css('display', 'block');

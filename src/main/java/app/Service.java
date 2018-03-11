@@ -40,18 +40,16 @@ public class Service {
             (String) document.get(MachineEnum.STATE.getDBEnum()),
             (String) document.get(MachineEnum.ACCOUNT_TYPE.getDBEnum()),
             (String) document.get(MachineEnum.MODEL.getDBEnum()),
-            (String) document.get(MachineEnum.TNC_DATE.getDBEnum()), // CustomDateTimeFormatter.formatDate(),
+            (String) document.get(MachineEnum.TNC_DATE.getDBEnum()),
             (String) document.get(MachineEnum.STATUS.getDBEnum()),
             (String) document.get(MachineEnum.PERSON_IN_CHARGE.getDBEnum()),
             (String) document.get(MachineEnum.REPORTED_BY.getDBEnum()),
             (String) document.get(MachineEnum.ADDITIONAL_NOTES.getDBEnum()),
             (String) document.get(MachineEnum.PPM_DATE.getDBEnum()),
-            // CustomDateTimeFormatter.formatDate(),
-            (String) document.get(MachineEnum.BRAND.getDBEnum()));
-        // (String) document.get(MachineEnum.LAST_UPDATED.getDBEnum()),
-        // (String) document.get(MachineEnum.DATE_OF_CREATION.getDBEnum()),
-        // // CustomDateTimeFormatter.convertLongToDateString(),
-        // // CustomDateTimeFormatter.convertLongToDateString(),
+            (String) document.get(MachineEnum.BRAND.getDBEnum()),
+            CustomDateTimeFormatter.convertLongToDateString(document.getLong(MachineEnum.DATE_OF_CREATION.getDBEnum())),
+            CustomDateTimeFormatter.convertLongToDateString(document.getLong(MachineEnum.LAST_UPDATED.getDBEnum())), 0,
+            0);
         // document.getLong(MachineEnum.TWO_WEEKS_BEFORE.getDBEnum()),
         // document.getLong(MachineEnum.TWO_WEEKS_AFTER.getDBEnum()));
         listOfMachines.add(machine);
@@ -112,11 +110,11 @@ public class Service {
     long currTimestamp = CustomDateTimeFormatter.generateTimestamp();
     long twoWeeksBefore = 0;
     long twoWeeksAfter = 0;
-    if (!machine.getPpmDate().isEmpty()) {
-      // Date date = CustomDateTimeFormatter.convertStringToDate(machine.getPpmDate());
-      // twoWeeksBefore = CustomDateTimeFormatter.getTwoWeeksBeforeDate(date);
-      // twoWeeksAfter = CustomDateTimeFormatter.getTwoWeeksAfterDate(date);
-    }
+    // if (!machine.getPpmDate().isEmpty()) {
+    // Date date = CustomDateTimeFormatter.convertStringToDate(machine.getPpmDate());
+    // twoWeeksBefore = CustomDateTimeFormatter.getTwoWeeksBeforeDate(date);
+    // twoWeeksAfter = CustomDateTimeFormatter.getTwoWeeksAfterDate(date);
+    // }
 
     db.getCollection(MACHINE_COLLECTION)
         .insertOne(new Document(MachineEnum.SERIAL_NUM.getDBEnum(), machine.getSerialNumber())
@@ -130,9 +128,9 @@ public class Service {
             .append(MachineEnum.REPORTED_BY.getDBEnum(), machine.getReportedBy())
             .append(MachineEnum.ADDITIONAL_NOTES.getDBEnum(), machine.getAdditionalNotes())
             .append(MachineEnum.PPM_DATE.getDBEnum(), machine.getPpmDate())
-            .append(MachineEnum.BRAND.getDBEnum(), machine.getBrand()));
-    // .append(MachineEnum.LAST_UPDATED.getDBEnum(), currTimestamp)
-    // .append(MachineEnum.DATE_OF_CREATION.getDBEnum(), currTimestamp)
+            .append(MachineEnum.BRAND.getDBEnum(), machine.getBrand())
+            .append(MachineEnum.DATE_OF_CREATION.getDBEnum(), currTimestamp)
+            .append(MachineEnum.LAST_UPDATED.getDBEnum(), currTimestamp));
     // .append(MachineEnum.TWO_WEEKS_BEFORE.getDBEnum(), twoWeeksBefore)
     // .append(MachineEnum.TWO_WEEKS_AFTER.getDBEnum(), twoWeeksAfter));
 
@@ -140,13 +138,15 @@ public class Service {
   }
 
   public boolean updateMachine(String serialNumber, Machine machine) {
+
+    long currTimestamp = CustomDateTimeFormatter.generateTimestamp();
     long twoWeeksBefore = 0;
     long twoWeeksAfter = 0;
-    if (!machine.getPpmDate().isEmpty()) {
-      // Date date = CustomDateTimeFormatter.convertStringToDate(machine.getPpmDate());
-      // twoWeeksBefore = CustomDateTimeFormatter.getTwoWeeksBeforeDate(date);
-      // twoWeeksAfter = CustomDateTimeFormatter.getTwoWeeksAfterDate(date);
-    }
+    // if (!machine.getPpmDate().isEmpty()) {
+    // Date date = CustomDateTimeFormatter.convertStringToDate(machine.getPpmDate());
+    // twoWeeksBefore = CustomDateTimeFormatter.getTwoWeeksBeforeDate(date);
+    // twoWeeksAfter = CustomDateTimeFormatter.getTwoWeeksAfterDate(date);
+    // }
 
     db.getCollection(MACHINE_COLLECTION).replaceOne(
         new Document(MachineEnum.SERIAL_NUM.getDBEnum(), machine.getSerialNumber()),
@@ -161,7 +161,10 @@ public class Service {
             .append(MachineEnum.REPORTED_BY.getDBEnum(), machine.getReportedBy())
             .append(MachineEnum.ADDITIONAL_NOTES.getDBEnum(), machine.getAdditionalNotes())
             .append(MachineEnum.PPM_DATE.getDBEnum(), machine.getPpmDate())
-            .append(MachineEnum.BRAND.getDBEnum(), machine.getBrand()));
+            .append(MachineEnum.BRAND.getDBEnum(), machine.getBrand())
+            .append(MachineEnum.DATE_OF_CREATION.getDBEnum(),
+                CustomDateTimeFormatter.convertDateStringToLong(machine.getDateOfCreation()))
+            .append(MachineEnum.LAST_UPDATED.getDBEnum(), currTimestamp));
     // .append(MachineEnum.LAST_UPDATED.getDBEnum(), CustomDateTimeFormatter.generateTimestamp())
     // .append(MachineEnum.DATE_OF_CREATION.getDBEnum(), machine.getDateOfCreation())
     // .append(MachineEnum.TWO_WEEKS_BEFORE.getDBEnum(), twoWeeksBefore)

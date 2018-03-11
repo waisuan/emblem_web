@@ -70,13 +70,22 @@ public class CustomDateTimeFormatter {
     return ts.getTime();
   }
 
-  public static String convertLongToDateString(long milliseconds) {
+  public static String convertLongToDateString(Long milliseconds) {
+    if (null == milliseconds) {
+      return "";
+    }
+
     Date date = new Date(milliseconds);
 
     return formatDate(date.toString());
   }
 
   public static long convertDateStringToLong(String input) {
+    if (input == null) {
+      System.out.println("convertDateStringToLong:: No date found. Default to current timestamp");
+      return generateTimestamp();
+    }
+
     Date date = convertStringToDate(input);
     java.sql.Timestamp ts = new java.sql.Timestamp(date.getTime());
     return ts.getTime();

@@ -1,6 +1,5 @@
 .test {
     /* width: 1500px; */
-
     /* padding-left: 15px;
     padding-right: 15px;
     margin-left: auto;
@@ -17,7 +16,7 @@ body {
 
 .starter-template {
     /*padding: 3rem 1.5rem;*/
-    text-align: center;
+    /* text-align: center; */
     margin-bottom: 10px;
 }
 
@@ -69,3 +68,40 @@ td {
 /*.container {
     background-color: red;
 }*/
+
+.st-sort-ascent:before {
+    content: '\25B4';
+}
+
+.st-sort-descent:before {
+    content: '\25BE';
+}
+
+.padding-zero {
+    padding-right: 2px;
+    padding-left: 2px;
+}
+
+.fa-times {
+    color: red;
+}
+
+.fa-times {
+    color: red;
+}
+
+.fa-plus, .fa-plus-circle {
+    color: #228B22;
+}
+
+.fa-pencil-square-o {
+    color: #1E90FF;
+}
+
+.fa-history {
+    color: #FF8C00;
+}
+
+.fa-sticky-note {
+    color: #708090;
+}
