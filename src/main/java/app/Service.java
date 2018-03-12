@@ -47,9 +47,9 @@ public class Service {
             (String) document.get(MachineEnum.ADDITIONAL_NOTES.getDBEnum()),
             (String) document.get(MachineEnum.PPM_DATE.getDBEnum()),
             (String) document.get(MachineEnum.BRAND.getDBEnum()),
+            CustomDateTimeFormatter.convertLongToDateString(document.getLong(MachineEnum.LAST_UPDATED.getDBEnum())),
             CustomDateTimeFormatter.convertLongToDateString(document.getLong(MachineEnum.DATE_OF_CREATION.getDBEnum())),
-            CustomDateTimeFormatter.convertLongToDateString(document.getLong(MachineEnum.LAST_UPDATED.getDBEnum())), 0,
-            0);
+            0, 0);
         // document.getLong(MachineEnum.TWO_WEEKS_BEFORE.getDBEnum()),
         // document.getLong(MachineEnum.TWO_WEEKS_AFTER.getDBEnum()));
         listOfMachines.add(machine);
@@ -84,18 +84,16 @@ public class Service {
             (String) document.get(MachineEnum.STATE.getDBEnum()),
             (String) document.get(MachineEnum.ACCOUNT_TYPE.getDBEnum()),
             (String) document.get(MachineEnum.MODEL.getDBEnum()),
-            (String) document.get(MachineEnum.TNC_DATE.getDBEnum()), // CustomDateTimeFormatter.formatDate(),
+            (String) document.get(MachineEnum.TNC_DATE.getDBEnum()),
             (String) document.get(MachineEnum.STATUS.getDBEnum()),
             (String) document.get(MachineEnum.PERSON_IN_CHARGE.getDBEnum()),
             (String) document.get(MachineEnum.REPORTED_BY.getDBEnum()),
             (String) document.get(MachineEnum.ADDITIONAL_NOTES.getDBEnum()),
             (String) document.get(MachineEnum.PPM_DATE.getDBEnum()),
-            // CustomDateTimeFormatter.formatDate(),
-            (String) document.get(MachineEnum.BRAND.getDBEnum()));
-        // (String) document.get(MachineEnum.LAST_UPDATED.getDBEnum()),
-        // (String) document.get(MachineEnum.DATE_OF_CREATION.getDBEnum()),
-        // // CustomDateTimeFormatter.convertLongToDateString(),
-        // // CustomDateTimeFormatter.convertLongToDateString(),
+            (String) document.get(MachineEnum.BRAND.getDBEnum()),
+            CustomDateTimeFormatter.convertLongToDateString(document.getLong(MachineEnum.LAST_UPDATED.getDBEnum())),
+            CustomDateTimeFormatter.convertLongToDateString(document.getLong(MachineEnum.DATE_OF_CREATION.getDBEnum())),
+            0, 0);
         // document.getLong(MachineEnum.TWO_WEEKS_BEFORE.getDBEnum()),
         // document.getLong(MachineEnum.TWO_WEEKS_AFTER.getDBEnum()));
         listOfMachines.add(machine);
@@ -106,7 +104,6 @@ public class Service {
   }
 
   public boolean insertMachine(Machine machine) {
-
     long currTimestamp = CustomDateTimeFormatter.generateTimestamp();
     long twoWeeksBefore = 0;
     long twoWeeksAfter = 0;
@@ -137,8 +134,7 @@ public class Service {
     return true;
   }
 
-  public boolean updateMachine(String serialNumber, Machine machine) {
-
+  public boolean updateMachine(Machine machine) {
     long currTimestamp = CustomDateTimeFormatter.generateTimestamp();
     long twoWeeksBefore = 0;
     long twoWeeksAfter = 0;
@@ -209,7 +205,6 @@ public class Service {
   }
 
   public MaintenanceHistory getHistory(String serialNumber, String workOrderNumber) {
-
     final ArrayList<MaintenanceHistory> listOfHistory = new ArrayList<MaintenanceHistory>();
 
     Document serialNumberReg = new Document();
@@ -246,7 +241,6 @@ public class Service {
   }
 
   public void insertHistory(MaintenanceHistory maintenanceHistory) {
-
     long currTimestamp = CustomDateTimeFormatter.generateTimestamp();
 
     db.getCollection(MAINTENANCE_COLLECTION)
@@ -261,7 +255,6 @@ public class Service {
   }
 
   public void updateHistory(MaintenanceHistory maintenanceHistory) {
-
     long currTimestamp = CustomDateTimeFormatter.generateTimestamp();
 
     db.getCollection(MAINTENANCE_COLLECTION).replaceOne(
@@ -279,7 +272,6 @@ public class Service {
   }
 
   public void deleteHistory(String serialNumber, String workOrderNumber) {
-
     db.getCollection(MAINTENANCE_COLLECTION).deleteMany(new Document(MachineEnum.SERIAL_NUM.getDBEnum(), serialNumber)
         .append(MaintenanceEnum.WORK_ORDER.getDBEnum(), workOrderNumber));
   }

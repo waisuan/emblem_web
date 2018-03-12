@@ -60,7 +60,7 @@ app.controller('ListMachinesCtrl', function($scope, $http, $location, $route, $t
     // $scope.headers = $scope.options.slice(1);
     $scope.searchTypeOption = $scope.options[0].actual;
     $scope.machineFilter = {$: undefined}; // initial non-filtering value
-    $scope.machinesPerPage = 10;
+    $scope.machinesPerPage = 30;
     $scope.currentPage = 1;
     $scope.pagesToDisplay = 5;
 
@@ -171,7 +171,7 @@ app.controller('EditMachineCtrl', function($scope, $http, $location, $route, $ro
     };
 
     $scope.updateMachine = function() {
-        $http.put('/api/machines/' + $routeParams.serialNumber, $scope.editMachine).then(function(data) {
+        $http.put('/api/machines', $scope.editMachine).then(function(data) {
             $('#create-success-alert').css('display', 'block');
             $('#create-success-alert').delay(3000).slideUp(500, function() {
                 $('#create-success-alert').css('display', 'none');
@@ -190,6 +190,7 @@ app.controller('EditMachineCtrl', function($scope, $http, $location, $route, $ro
 
 app.controller('ListHistoryCtrl', function($scope, $http, $location, $route, $routeParams, $timeout) {
     $scope.toDel = {};
+    $scope.actionTaken = '';
 
     _fetch = function() {
         $http.get('/api/history/' + $routeParams.serialNumber).then(function(data) {
@@ -202,6 +203,10 @@ app.controller('ListHistoryCtrl', function($scope, $http, $location, $route, $ro
     $scope.setDelAim = function(serialNumber, workOrderNumber) {
         $scope.toDel['serialNumber'] = serialNumber;
         $scope.toDel['workOrderNumber'] = workOrderNumber;
+    }
+
+    $scope.showActionTaken = function(actionTaken) {
+        $scope.actionTaken = actionTaken;
     }
 
     $scope.delHistory = function() {

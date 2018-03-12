@@ -1,17 +1,17 @@
-<table class="table table-bordered main-tbl">
-    <thead>
+<table st-table="copyHistory" st-safe-src="history" class="table table-bordered main-tbl">
+    <thead class="thead-light">
         <tr>
-            <th data-sortable="true">Work Order No.</th>
-            <th>Work Order Date</th>
-            <th>Work Order Type</th>
-            <th>Reported By</th>
-            <th>Created On</th>
-            <th>Last Updated On</th>
+            <th st-sort="workOrderNumber">Work Order No.</th>
+            <th st-sort="workOrderDate">Work Order Date</th>
+            <th st-sort="workOrderType">Work Order Type</th>
+            <th st-sort="reportedBy">Reported By</th>
+            <th st-sort="dateOfCreation">Created On</th>
+            <th st-sort="lastUpdated">Last Updated On</th>
             <th>Action</th>
         </tr>
     </thead>
     <tbody>
-        <tr ng-repeat="h in history">
+        <tr ng-repeat="h in copyHistory">
             <td>
                 {{h.workOrderNumber}}
             </td>
@@ -33,6 +33,7 @@
             <td>
                 <a href="#/edit_history/{{h.serialNumber}}/{{h.workOrderNumber}}" title="Edit history"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></a>
                 <a ng-click="setDelAim( h.serialNumber, h.workOrderNumber )" onclick="return false;" href="#del" data-toggle="modal" data-target="#del" title="Delete history"><i class="fa fa-times" aria-hidden="true" title="Delete history"></i></a>
+                <a ng-click="showActionTaken( h.actionTaken )" onclick="return false;" href="#actionTaken" data-toggle="modal" title="Action Taken"><i class="fa fa-wrench" aria-hidden="true"></i></a>
             </td>
         </tr>
     </tbody>
@@ -48,5 +49,20 @@
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
             </div>
         </div>
+    </div>
+</div>
+<div class="modal fade" id="actionTaken" role="dialog">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Action Taken</h5>
+        </div>
+        <div class="modal-body">
+          <textarea rows=20 class="modal-text-area" readonly>{{actionTaken}}</textarea>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+        </div>
+      </div>
     </div>
 </div>

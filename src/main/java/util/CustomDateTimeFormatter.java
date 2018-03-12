@@ -82,7 +82,6 @@ public class CustomDateTimeFormatter {
 
   public static long convertDateStringToLong(String input) {
     if (input == null) {
-      System.out.println("convertDateStringToLong:: No date found. Default to current timestamp");
       return generateTimestamp();
     }
 

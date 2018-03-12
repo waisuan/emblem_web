@@ -59,7 +59,7 @@ td {
     width: 100%; */
 }
 
-#notes-area {
+.modal-text-area {
     width: 100%;
     resize: none;
 }
@@ -104,4 +104,8 @@ td {
 
 .fa-sticky-note {
     color: #708090;
+}
+
+.fa-wrench {
+    color: black;
 }

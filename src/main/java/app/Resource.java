@@ -39,9 +39,9 @@ public class Resource {
       return response;
     }, new JsonTransformer());
 
-    put(API_CONTEXT + "/machines/:serialNumber", "application/json", (request, response) -> {
+    put(API_CONTEXT + "/machines", "application/json", (request, response) -> {
       Machine machine = new Gson().fromJson(request.body(), Machine.class);
-      service.updateMachine(request.params(":serialNumber"), machine);
+      service.updateMachine(machine);
       response.status(200);
       // response.status(400);
       return response;
