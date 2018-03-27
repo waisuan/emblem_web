@@ -14,6 +14,8 @@ public class MaintenanceHistory implements Serializable {
   private String dateOfCreation;
   private String reportedBy;
   private String workOrderType;
+  private String workOrderDateInString;
+  private Long lastUpdatedInLong;
 
   public MaintenanceHistory(String serialNumber, String workOrderNumber, String workOrderDate, String actionTaken,
       String reportedBy, String workOrderType) {
@@ -26,7 +28,8 @@ public class MaintenanceHistory implements Serializable {
   }
 
   public MaintenanceHistory(String serialNumber, String workOrderNumber, String workOrderDate, String actionTaken,
-      String reportedBy, String workOrderType, String lastUpdated, String dateOfCreation) {
+      String reportedBy, String workOrderType, String lastUpdated, String dateOfCreation, String workOrderDateInString,
+      Long lastUpdatedInLong) {
     this.serialNumber = serialNumber;
     this.workOrderNumber = workOrderNumber;
     this.workOrderDate = workOrderDate;
@@ -35,6 +38,8 @@ public class MaintenanceHistory implements Serializable {
     this.workOrderType = workOrderType;
     this.lastUpdated = lastUpdated;
     this.dateOfCreation = dateOfCreation;
+    this.workOrderDateInString = workOrderDateInString;
+    this.lastUpdatedInLong = lastUpdatedInLong;
   }
 
   public String getSerialNumber() {
@@ -77,16 +82,6 @@ public class MaintenanceHistory implements Serializable {
     this.lastUpdated = lastUpdated;
   }
 
-  public void updateFields(String serialNumber, String workOrderNumber, String workOrderDate, String actionTaken,
-      String reportedBy, String workOrderType) {
-    this.serialNumber = serialNumber;
-    this.workOrderNumber = workOrderNumber;
-    this.workOrderDate = workOrderDate;
-    this.actionTaken = actionTaken;
-    this.reportedBy = reportedBy;
-    this.workOrderType = workOrderType;
-  }
-
   public String getDateOfCreation() {
     return dateOfCreation;
   }
@@ -110,4 +105,21 @@ public class MaintenanceHistory implements Serializable {
   public void setWorkOrderType(String workOrderType) {
     this.workOrderType = workOrderType;
   }
+
+  public String getWorkOrderDateInString() {
+    return workOrderDateInString;
+  }
+
+  public void setWorkOrderDateInString(String workOrderDateInString) {
+    this.workOrderDateInString = workOrderDateInString;
+  }
+
+  public Long getLastUpdatedInLong() {
+    return lastUpdatedInLong;
+  }
+
+  public void setLastUpdatedInLong(Long lastUpdatedInLong) {
+    this.lastUpdatedInLong = lastUpdatedInLong;
+  }
+
 }

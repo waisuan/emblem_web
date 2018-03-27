@@ -1,64 +1,27 @@
-<div class="test">
-    <div class="row">
-        <div class="col-xl-12">
-            <table st-table="machines" class="table table-striped">
-                <thead>
-                    <tr>
-                        <th data-sortable="true">Serial No.</th>
-                        <th>State</th>
-                        <th>Model</th>
-                        <th>TNC Date</th>
-                        <th>Customer</th>
-                        <th>Status</th>
-                        <th>Account Type</th>
-                        <th>Brand</th>
-                        <th>Person in Charge</th>
-                        <th>Reported By</th>
-                        <th>Created On</th>
-                        <th>Last Updated On</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr ng-repeat="machine in machines">
-                        <td>
-                            {{machine.serialNumber}}
-                        </td>
-                        <td>
-                            {{machine.state}}
-                        </td>
-                        <td>
-                            {{machine.model}}
-                        </td>
-                        <td>
-                            {{machine.tncDate}}
-                        </td>
-                        <td>
-                            {{machine.customer}}
-                        </td>
-                        <td>
-                            {{machine.status}}
-                        </td>
-                        <td>
-                            {{machine.accountType}}
-                        </td>
-                        <td>
-                            {{machine.brand}}
-                        </td>
-                        <td>
-                            {{machine.personInCharge}}
-                        </td>
-                        <td>
-                            {{machine.reportedBy}}
-                        </td>
-                        <td>
-                            {{machine.dateOfCreation}}
-                        </td>
-                        <td>
-                            {{machine.lastUpdated}}
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
-    </div>
-</div>
+<table st-table="displayed" class="table table-striped">
+	<thead>
+	<tr>
+		<th st-ratio="20" st-sort="firstName">first name</th>
+		<th st-ratio="20" st-sort="lastName">last name</th>
+		<th st-ratio="10" st-sort="age">age</th>
+		<th st-ratio="30" st-sort="email">email</th>
+		<th st-ratio="20" st-sort="balance">balance</th>
+	</tr>
+	</thead>
+	<tbody>
+	<tr ng-repeat="row in displayed">
+		<td st-ratio="20">{{row.firstName}}</td>
+		<td st-ratio="20">{{row.lastName | uppercase}}</td>
+		<td st-ratio="10">{{row.age}}</td>
+		<td st-ratio="30">{{row.email}}</td>
+		<td st-ratio="20">{{row.balance | currency}}</td>
+	</tr>
+	</tbody>
+	<tfoot>
+	<tr>
+		<td colspan="5" class="text-center">
+			<div  st-items-by-page="20" st-pagination=""></div>
+		</td>
+	</tr>
+	</tfoot>
+</table>

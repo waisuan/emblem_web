@@ -11,10 +11,11 @@ import java.util.Date;
 
 public class CustomDateTimeFormatter {
   private final static DateFormat inputFormat = new SimpleDateFormat("EEE MMM dd HH:mm:ss zzz yyyy");
-  private final static DateFormat formatter = new SimpleDateFormat("MM/dd/yyyy HH:mm");
+  private final static DateFormat formatter = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss");
+  private final static DateFormat formatter2 = new SimpleDateFormat("MM/dd/yyyy");
   private final static DateTimeFormatter dtf = DateTimeFormatter.ofPattern("MM/dd/yyyy");
 
-  public static String formatDate(String input) {
+  public synchronized static String formatDate(String input) {
     if (null == input || input.equals(""))
       return input;
 
@@ -27,21 +28,34 @@ public class CustomDateTimeFormatter {
     return input;
   }
 
-  public static String convertLocalDateToString(LocalDate localDate) {
+  public synchronized static String formatDate2(String input) {
+    if (null == input || input.equals(""))
+      return input;
+
+    try {
+      return formatter2.format(inputFormat.parse(input));
+    } catch (ParseException e) {
+      e.printStackTrace();
+    }
+
+    return input;
+  }
+
+  public synchronized static String convertLocalDateToString(LocalDate localDate) {
     if (null == localDate)
       return "";
 
     return Date.from(localDate.atStartOfDay(ZoneId.systemDefault()).toInstant()).toString();
   }
 
-  public static LocalDate convertStringToLocalDate(String input) {
+  public synchronized static LocalDate convertStringToLocalDate(String input) {
     if (null == input || input.equals(""))
       return null;
 
     return LocalDate.parse(input, dtf);
   }
 
-  public static Date convertLocalDateToDate(LocalDate localDate) {
+  public synchronized static Date convertLocalDateToDate(LocalDate localDate) {
     if (null == localDate)
       return null;
 
@@ -50,7 +64,7 @@ public class CustomDateTimeFormatter {
     return date;
   }
 
-  public static Date convertStringToDate(String input) {
+  public synchronized static Date convertStringToDate(String input) {
     if (null == input || input.equals(""))
       return null;
 
@@ -63,14 +77,27 @@ public class CustomDateTimeFormatter {
     return null;
   }
 
-  public static long generateTimestamp() {
+  public synchronized static Date convertStringToDate2(String input) {
+    if (null == input || input.equals(""))
+      return null;
+
+    try {
+      Date date = formatter2.parse(input);
+      return date;
+    } catch (ParseException e) {
+      e.printStackTrace();
+    }
+    return null;
+  }
+
+  public synchronized static long generateTimestamp() {
     java.util.Date today = new java.util.Date();
     java.sql.Timestamp ts = new java.sql.Timestamp(today.getTime());
 
     return ts.getTime();
   }
 
-  public static String convertLongToDateString(Long milliseconds) {
+  public synchronized static String convertLongToDateString(Long milliseconds) {
     if (null == milliseconds) {
       return "";
     }
@@ -80,7 +107,17 @@ public class CustomDateTimeFormatter {
     return formatDate(date.toString());
   }
 
-  public static long convertDateStringToLong(String input) {
+  public synchronized static String convertLongToDateString2(Long milliseconds) {
+    if (null == milliseconds) {
+      return "";
+    }
+
+    Date date = new Date(milliseconds);
+
+    return formatDate2(date.toString());
+  }
+
+  public synchronized static long convertDateStringToLong(String input) {
     if (input == null) {
       return generateTimestamp();
     }
@@ -90,18 +127,38 @@ public class CustomDateTimeFormatter {
     return ts.getTime();
   }
 
-  public static long getTwoWeeksBeforeDate(Date date) {
+  public synchronized static String convertDateToString(Date date) {
+    return date.toString();
+  }
+
+  public synchronized static long convertDateToLong(Date date) {
+    java.sql.Timestamp ts = new java.sql.Timestamp(date.getTime());
+    return ts.getTime();
+  }
+
+  public synchronized static String convertStringToYYYYMMDD(String date) {
+    String[] tokens = date.split("/");
+    return tokens[2] + tokens[0] + tokens[1];
+  }
+
+  public synchronized static long getNow() {
     Calendar calendar = Calendar.getInstance(); // this would default to now
-    calendar.setTime(date);
-    calendar.add(Calendar.DAY_OF_MONTH, -14);
     java.sql.Timestamp ts = new java.sql.Timestamp(calendar.getTime().getTime());
     return ts.getTime();
   }
 
-  public static long getTwoWeeksAfterDate(Date date) {
+  public synchronized static long getXDaysBeforeDate(Date date, int substractDaysBy) {
     Calendar calendar = Calendar.getInstance(); // this would default to now
     calendar.setTime(date);
-    calendar.add(Calendar.DAY_OF_MONTH, 14);
+    calendar.add(Calendar.DAY_OF_MONTH, -substractDaysBy);
+    java.sql.Timestamp ts = new java.sql.Timestamp(calendar.getTime().getTime());
+    return ts.getTime();
+  }
+
+  public synchronized static long getXDaysAfterDate(Date date, int addDaysBy) {
+    Calendar calendar = Calendar.getInstance(); // this would default to now
+    calendar.setTime(date);
+    calendar.add(Calendar.DAY_OF_MONTH, addDaysBy);
     java.sql.Timestamp ts = new java.sql.Timestamp(calendar.getTime().getTime());
     return ts.getTime();
   }

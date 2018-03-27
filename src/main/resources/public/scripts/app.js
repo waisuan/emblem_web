@@ -5,7 +5,9 @@ var app = angular.module('emblem', [
     'ngRoute',
     'bootstrap.angular.validation',
     'smart-table',
-    'ui.bootstrap'
+    'ui.bootstrap',
+    'ngToast',
+    'rzTable'
 ]);
 
 app.config(['$locationProvider', function($locationProvider) {
@@ -21,6 +23,16 @@ app.config(['bsValidationConfigProvider', function(bsValidationConfigProvider) {
     bsValidationConfigProvider.global.errorMessagePrefix = '<i class="fa fa-exclamation-circle"></i> &nbsp;';
 }]);
 
+app.config(['ngToastProvider', function(ngToast) {
+    ngToast.configure({
+          verticalPosition: 'top',
+          horizontalPosition: 'center',
+          maxNumber: 5,
+          combineDuplications: true,
+          animation: 'slide'
+    });
+}]);
+
 app.config(function($routeProvider) {
     $routeProvider.when('/', {
         templateUrl: 'views/machines.html',
@@ -28,7 +40,7 @@ app.config(function($routeProvider) {
     }).when('/new_machine', {
         templateUrl: 'views/new_machine.html',
         controller: 'CreateNewMachineCtrl'
-    }).when('/edit_machine/:serialNumber', {
+    }).when('/edit_machine/:serialNumber/:lastUpdated', {
         templateUrl: 'views/edit_machine.html',
         controller: 'EditMachineCtrl'
     }).when('/history/:serialNumber', {
@@ -37,36 +49,91 @@ app.config(function($routeProvider) {
     }).when('/add_history/:serialNumber', {
         templateUrl: 'views/add_history.html',
         controller: 'CreateHistoryCtrl'
-    }).when('/edit_history/:serialNumber/:workOrderNumber', {
+    }).when('/edit_history/:serialNumber/:workOrderNumber/:lastUpdated', {
         templateUrl: 'views/edit_history.html',
         controller: 'EditHistoryCtrl'
     }).when('/test', {
         templateUrl: 'views/test.html',
-        controller: 'ListMachinesCtrl'
+        controller: 'TestCtrl'
     }).otherwise({
         redirectTo: '/'
     })
 });
 
-app.controller('ListMachinesCtrl', function($scope, $http, $location, $route, $timeout) {
-    // $scope.searchType = 'Serial No.';
-    $scope.toDel = '';
-    $scope.notes = '';
+app.factory('ErrorFactory', function () {
+    return {
+        success: function() {
+            $('#create-success-alert').css('display', 'block');
+            $('#create-success-alert').delay(3000).slideUp(500, function() {
+                $('#create-success-alert').css('display', 'none');
+            });
+        },
+        failure: function() {
+            $('#create-fail-alert').css('display', 'block');
+            $('#create-fail-alert').delay(5000).slideUp(500, function() {
+                $('#create-fail-alert').css('display', 'none');
+            });
+        }
+    }
+});
+
+app.factory('MachinesFactory', function () {
+    var machines = {};
+    return {
+        getMachines: function () {
+            return machines;
+        },
+        setMachines: function(updated) {
+            machines = updated;
+        },
+    };
+});
+
+app.controller('NavCtrl', function($scope, $http, MachinesFactory) {
+    $scope.machinesDue = [];
+
+    $http.get('/api/machines/due').then(function(data) {
+        $scope.machinesDue = data.data;
+    })
+
+    $scope.$watch(function () {
+        return MachinesFactory.getMachines();
+    }, function (newValue, oldValue) {
+        if (newValue !== oldValue) {
+            $scope.machinesDue = newValue;
+        }
+    });
+});
+
+app.controller('ListMachinesCtrl', function($scope, $http, $location, $route, $timeout, ngToast, MachinesFactory) {
     $scope.options = [{actual: 'All', internal: '$'}, {actual: 'Serial No.', internal: 'serialNumber'}, {actual: 'State', internal: 'state'},
                       {actual: 'Model', internal: 'model'}, {actual: 'TNC Date', internal: 'tncDate'}, {actual: 'PPM Date', internal: 'ppmDate'},
                       {actual: 'Customer', internal: 'customer'}, {actual: 'Status', internal: 'status'}, {actual: 'Account Type', internal: 'accountType'},
                       {actual: 'Brand', internal: 'brand'}, {actual: 'Person In Charge', internal: 'personInCharge'}, {actual: 'Reported By', internal: 'reportedBy'},
                       {actual: 'Additional Notes', internal: 'additionalNotes'}, {actual: 'Created On', internal: 'dateOfCreation'}, {actual: 'Last Updated On', internal: 'lastUpdated'}];
-    // $scope.headers = $scope.options.slice(1);
+    $scope.toDel = {};
+    $scope.notes = '';
     $scope.searchTypeOption = $scope.options[0].actual;
     $scope.machineFilter = {$: undefined}; // initial non-filtering value
-    $scope.machinesPerPage = 30;
+    $scope.machinesPerPage = 50;
     $scope.currentPage = 1;
     $scope.pagesToDisplay = 5;
+    $scope.saving = false;
+    $scope.machines = [];
 
     $http.get('/api/machines').then(function(data) {
-        $scope.machines = data.data;
+        var resultWrapper = data.data;
+        $scope.machines = resultWrapper.machines;
+        // TODO can this be done better? we are fetching for machinesDue TWICE in one reload; here and in NavCtrl
+        // is there a way we can only fetch from server (in NavCtrl) if page has been F5-ed?
+        $scope.machinesDue = resultWrapper.machinesDue;
     })
+
+    $scope.$watch('machinesDue', function (newValue, oldValue) {
+        if (newValue !== oldValue) {
+            MachinesFactory.setMachines(newValue);
+        }
+    });
 
     $scope.setDelAim = function(machine) {
         $scope.toDel = machine;
@@ -75,23 +142,6 @@ app.controller('ListMachinesCtrl', function($scope, $http, $location, $route, $t
     $scope.showNotes = function(notes) {
         $scope.notes = notes;
     }
-
-    // $scope.toggleSearchVal = function(searchType) {
-    //     $scope.searchType = searchType;
-    //     $('#searchValueInput').val('');
-    //     if (searchType == 'All') {
-    //         $('#searchValueInput').prop('disabled', true);
-    //         $('#machineSearchBtn').prop('disabled', false);
-    //     } else {
-    //         $('#searchValueInput').prop('disabled', false);
-    //         $('#machineSearchBtn').prop('disabled', true);
-    //     }
-    // }
-
-    // $scope.toggleSearchBtn = function() {
-    //     var isDisabled = (($scope.searchValue == null || $scope.searchValue == '') && $scope.searchType != 'All') ? true : false;
-    //     $('#machineSearchBtn').prop('disabled', isDisabled);
-    // }
 
     $scope.setMachineSearchFilter = function() {
         $scope.machineFilter = {};
@@ -105,179 +155,449 @@ app.controller('ListMachinesCtrl', function($scope, $http, $location, $route, $t
 
     $scope.changePage = function() {}
 
-    // $scope.searchMachine = function() {
-    //     if ($scope.searchType == 'All') {
-    //         $http.get('/api/machines').then(function(data) {
-    //             $scope.machines = data.data;
-    //         })
-    //     } else {
-    //         $http.get('/api/machines/' + $scope.searchType + '/' + $scope.searchValue).then(function(data) {
-    //             $scope.machines = data.data;
-    //         })
-    //     }
-    // }
-
     $scope.delMachine = function() {
+        $scope.saving = true;
         var index = $scope.machines.indexOf($scope.toDel);
-        if (index === -1) {
-            $('#del').modal('toggle');
-            $timeout(function() {
-                // 1 second delay, might not need this long, but it works.
-                $route.reload();
-            }, 1000);
-        }
-
         var serialNumber = $scope.machines[index].serialNumber;
+        var lastUpdated = $scope.machines[index].lastUpdatedInLong;
 
-        $http.delete('/api/machines/' + serialNumber).then(function(data) {
-            $('#del').modal('toggle');
-            $scope.machines.splice(index, 1);
+        $http.delete('/api/machines/' + serialNumber + '/' + lastUpdated).then(function(data) {
+            $timeout(function(){
+                $scope.machines.splice(index, 1);
+                var found = $scope.machinesDue.find(x => x.serialNumber === serialNumber);
+                if (found) {
+                    index = $scope.machinesDue.indexOf(found);
+                    $scope.machinesDue.splice(index, 1);
+                }
+
+                $('#del').modal('toggle');
+                $scope.saving = false;
+            }, 1000);
         }).catch(function(response) {
-            console.error('Oops:: ', response.status, response.data);
+            $timeout(function(){
+                console.error('Oops:: ', response.status, response.data);
+                if (response.status === 409) {
+                    $('#' + serialNumber).removeClass('table-danger');
+                    $('#' + serialNumber).addClass('table-danger');
+                    ngToast.create({
+                        className: 'danger',
+                        content: '<h3>This record has recently been updated. Please refresh the page.</h3>',
+                        timeout: 5000,
+                        dismissButton: true,
+                    });
+                } else if (response.status === 404) {
+                    $('#' + serialNumber).removeClass('table-danger');
+                    $('#' + serialNumber).addClass('table-danger');
+                    ngToast.create({
+                        className: 'danger',
+                        content: '<h3>This record no longer exists. Please refresh the page.</h3>',
+                        timeout: 5000,
+                        dismissButton: true,
+                    });
+                } else {
+                    ngToast.create({
+                        className: 'danger',
+                        content: '<h3>Oops! Something went wrong. Please try again.</h3>',
+                        timeout: 5000,
+                        dismissButton: true,
+                    });
+                }
+
+                $('#del').modal('toggle');
+                $scope.saving = false;
+            }, 1000);
         })
         return;
     }
 });
 
-app.controller('CreateNewMachineCtrl', function($scope, $http, $location, $route) {
+app.controller('CreateNewMachineCtrl', function($scope, $http, $location, $route, $timeout, MachinesFactory, ErrorFactory) {
     $scope.newMachine = {};
+    $scope.saving = false;
+
+    $scope.$watch('machinesDue', function (newValue, oldValue) {
+        if (newValue !== oldValue) {
+            MachinesFactory.setMachines(newValue);
+        }
+    });
 
     $scope.createNewMachine = function() {
+        $scope.saving = true;
         $http.post('/api/machines', $scope.newMachine).then(function(data) {
-            $scope.newMachine = {};
-            $('#create-success-alert').css('display', 'block');
-            $('#create-success-alert').delay(3000).slideUp(500, function() {
-                $('#create-success-alert').css('display', 'none');
-            });
+            var resultWrapper = data.data;
+            $scope.machinesDue = resultWrapper.machinesDue;
+            $timeout(function(){
+                $scope.newMachine = {};
+                $scope.saving = false;
+                ErrorFactory.success();
+            }, 1000);
         }).catch(function(response) {
             console.error('Oops:: ', response.status, response.data);
-            $('#create-fail-alert').css('display', 'block');
-            $('#create-fail-alert').delay(5000).slideUp(500, function() {
-                $('#create-fail-alert').css('display', 'none');
-            });
+            if (response.status === 409) {
+                $scope.errMsg = 'This record already exists.';
+            } else {
+                $scope.errMsg = 'Something went wrong. Please try again.';
+            }
+            $timeout(function(){
+                $scope.saving = false;
+                ErrorFactory.failure();
+            }, 1000);
         })
     }
 });
 
-app.controller('EditMachineCtrl', function($scope, $http, $location, $route, $routeParams) {
+app.controller('EditMachineCtrl', function($scope, $http, $location, $route, $routeParams, $timeout, MachinesFactory, ngToast, ErrorFactory) {
     $scope.editMachine = {};
+    $scope.saving = false;
 
-    _fetch = function() {
-        $http.get('/api/machines/Serial No./' + $routeParams.serialNumber).then(function(data) {
-            $scope.editMachine = data.data[0];
-        }).catch(function(response) {
-            console.error('Oops:: ', response.status, response.data);
-        })
-    };
+    //$http.get('/api/machines/' + $routeParams.serialNumber + '/' + $routeParams.lastUpdated + '/0')
+    $http.get('/api/machines/' + $routeParams.serialNumber, { params: { lastUpdated: $routeParams.lastUpdated, hardfailure: '0' } }).then(function(data) {
+        var resultWrapper = data.data;
+        $scope.editMachine = resultWrapper.machine;
+        return resultWrapper.message;
+    }).then(function(message) {
+        if (message === "RecordWasRecentlyUpdated") {
+            ngToast.create({
+                className: 'warning',
+                content: '<h3>This record has recently been updated. Page has been refreshed.</h3>',
+                timeout: 2000,
+                dismissButton: true,
+            });
+        }
+    }).catch(function(response) {
+        console.error('Oops:: ', response.status, response.data);
+        if (response.status === 404) {
+            ngToast.create({
+                className: 'danger',
+                content: '<h3>Oops! This record does not exist.</h3>',
+                timeout: 5000,
+                dismissButton: true,
+            });
+        } else {
+            ngToast.create({
+                className: 'danger',
+                content: '<h3>Oops! Something went wrong. Please try again.</h3>',
+                timeout: 5000,
+                dismissButton: true,
+            });
+        }
+    })
+
+    $scope.$watch('machinesDue', function (newValue, oldValue) {
+        if (newValue !== oldValue) {
+            MachinesFactory.setMachines(newValue);
+        }
+    });
 
     $scope.updateMachine = function() {
+        $scope.saving = true;
         $http.put('/api/machines', $scope.editMachine).then(function(data) {
-            $('#create-success-alert').css('display', 'block');
-            $('#create-success-alert').delay(3000).slideUp(500, function() {
-                $('#create-success-alert').css('display', 'none');
-            });
+            var resultWrapper = data.data;
+            $scope.editMachine = resultWrapper.machine;
+            $scope.machinesDue = resultWrapper.machinesDue;
+            $timeout(function(){
+                $scope.saving = false;
+                ErrorFactory.success();
+            }, 1000);
         }).catch(function(response) {
             console.error('Oops:: ', response.status, response.data);
-            $('#create-fail-alert').css('display', 'block');
-            $('#create-fail-alert').delay(5000).slideUp(500, function() {
-                $('#create-fail-alert').css('display', 'none');
-            });
+            if (response.status === 409) {
+                $scope.errMsg = 'This record has recently been updated. Please refresh the page.';
+            } else if (response.status === 404) {
+                $scope.errMsg = 'This record no longer exists.';
+            } else {
+                $scope.errMsg = 'Something went wrong. Please try again.';
+            }
+            $timeout(function(){
+                $scope.saving = false;
+                ErrorFactory.failure();
+            }, 1000);
         })
     }
-
-    _fetch();
 });
 
-app.controller('ListHistoryCtrl', function($scope, $http, $location, $route, $routeParams, $timeout) {
+app.controller('ListHistoryCtrl', function($scope, $http, $location, $route, $routeParams, $timeout, ngToast) {
+    $scope.options = [{actual: 'All', internal: '$'}, {actual: 'No.', internal: 'workOrderNumber'}, {actual: 'Date', internal: 'workOrderDate'},
+                      {actual: 'Type', internal: 'workOrderType'}, {actual: 'Reported By', internal: 'reportedBy'}, {actual: 'Created On', internal: 'dateOfCreation'},
+                      {actual: 'Last Updated On', internal: 'lastUpdated'} ];
     $scope.toDel = {};
     $scope.actionTaken = '';
-
-    _fetch = function() {
-        $http.get('/api/history/' + $routeParams.serialNumber).then(function(data) {
-            $scope.history = data.data;
-        }).catch(function(response) {
-            console.error('Oops:: ', response.status, response.data);
-        })
+    $scope.searchAttributes = {
+        option: $scope.options[0].actual,
+        value: undefined
     };
+    $scope.historyFilter = {$: undefined}; // initial non-filtering value
+    $scope.historyPerPage = 50;
+    $scope.currentPage = 1;
+    $scope.pagesToDisplay = 5;
+    $scope.saving = false;
+    $scope.serialNumber = $routeParams.serialNumber;
+    $scope.history = [];
 
-    $scope.setDelAim = function(serialNumber, workOrderNumber) {
-        $scope.toDel['serialNumber'] = serialNumber;
-        $scope.toDel['workOrderNumber'] = workOrderNumber;
+    $http.get('/api/history/' + $routeParams.serialNumber).then(function(data) {
+        $scope.history = data.data;
+    }).catch(function(response) {
+        console.error('Oops:: ', response.status, response.data);
+        if (response.status === 404) {
+            ngToast.create({
+                className: 'danger',
+                content: '<h3>Oops! Machine record no longer exists.</h3>',
+                timeout: 5000,
+                dismissButton: true,
+            });
+        } else {
+            ngToast.create({
+                className: 'danger',
+                content: '<h3>Oops! Something went wrong. Please try again.</h3>',
+                timeout: 5000,
+                dismissButton: true,
+            });
+        }
+    })
+
+    $scope.setDelAim = function(history) {
+        $scope.toDel = history;
     }
 
     $scope.showActionTaken = function(actionTaken) {
         $scope.actionTaken = actionTaken;
     }
 
-    $scope.delHistory = function() {
-        $http.delete('/api/history/' + $scope.toDel['serialNumber'] + '/' + $scope.toDel['workOrderNumber']).then(function(data) {
-            $('#del').modal('toggle');
-            $timeout(function() {
-                // 1 second delay, might not need this long, but it works.
-                $route.reload();
-            }, 500);
-        }).catch(function(response) {
-            console.error('Oops:: ', response.status, response.data);
-        })
+    $scope.setHistorySearchFilter = function() {
+        $scope.historyFilter = {};
+        for (i = 0; i < $scope.options.length; i++) {
+            if ($scope.options[i].actual == $scope.searchAttributes.option) {
+                $scope.historyFilter[$scope.options[i].internal || '$'] = $scope.searchAttributes.value;
+                break;
+            }
+        }
     }
 
-    _fetch();
+    $scope.delHistory = function() {
+        $scope.saving = true;
+        var index = $scope.history.indexOf($scope.toDel);
+        var serialNumber = $scope.history[index].serialNumber;
+        var workOrderNumber = $scope.history[index].workOrderNumber;
+        var lastUpdated = $scope.history[index].lastUpdatedInLong;
+
+        $http.delete('/api/history/' + serialNumber + '/' + workOrderNumber + '/' + lastUpdated).then(function(data) {
+            $timeout(function(){
+                $scope.history.splice(index, 1);
+                $('#del').modal('toggle');
+                $scope.saving = false;
+            }, 1000);
+        }).catch(function(response) {
+            $timeout(function(){
+                console.error('Oops:: ', response.status, response.data);
+                if (response.status === 409) {
+                    $('#' + workOrderNumber).removeClass('table-danger');
+                    $('#' + workOrderNumber).addClass('table-danger');
+                    ngToast.create({
+                        className: 'danger',
+                        content: '<h3>This record has recently been updated. Please refresh the page.</h3>',
+                        timeout: 5000,
+                        dismissButton: true,
+                    });
+                } else if (response.status === 404) {
+                    $('#' + workOrderNumber).removeClass('table-danger');
+                    $('#' + workOrderNumber).addClass('table-danger');
+                    ngToast.create({
+                        className: 'danger',
+                        content: '<h3>This record no longer exists. Please refresh the page.</h3>',
+                        timeout: 5000,
+                        dismissButton: true,
+                    });
+                } else {
+                    ngToast.create({
+                        className: 'danger',
+                        content: '<h3>Oops! Something went wrong. Please try again.</h3>',
+                        timeout: 5000,
+                        dismissButton: true,
+                    });
+                }
+
+                $('#del').modal('toggle');
+                $scope.saving = false;
+            }, 1000);
+        })
+        return;
+    }
 });
 
-app.controller('CreateHistoryCtrl', function($scope, $http, $location, $route, $routeParams) {
+app.controller('CreateHistoryCtrl', function($scope, $http, $location, $route, $routeParams, $timeout, ngToast, ErrorFactory) {
     $scope.newHistory = {
         serialNumber: $routeParams.serialNumber
     };
+    $scope.saving = false;
+
+    $http.get('/api/machines/' + $routeParams.serialNumber, { params: { hardfailure: '0' } }).then(function(data) {
+    }).catch(function(response) {
+        console.error('Oops:: ', response.status, response.data);
+        if (response.status === 404) {
+            ngToast.create({
+                className: 'danger',
+                content: '<h3>Oops! Machine record no longer exists.</h3>',
+                timeout: 5000,
+                dismissButton: true,
+            });
+        } else {
+            ngToast.create({
+                className: 'danger',
+                content: '<h3>Oops! Something went wrong. Please try again.</h3>',
+                timeout: 5000,
+                dismissButton: true,
+            });
+        }
+    })
 
     $scope.createNewHistory = function() {
+        $scope.saving = true;
         $http.post('/api/history', $scope.newHistory).then(function(data) {
-            $scope.newHistory = {
-                serialNumber: $routeParams.serialNumber
-            };
-            $('#create-success-alert').css('display', 'block');
-            $('#create-success-alert').delay(3000).slideUp(500, function() {
-                $('#create-success-alert').css('display', 'none');
-            });
+            $timeout(function(){
+                $scope.newHistory = {
+                    serialNumber: $routeParams.serialNumber
+                };
+                $scope.saving = false;
+                ErrorFactory.success();
+            }, 1000);
         }).catch(function(response) {
             console.error('Oops:: ', response.status, response.data);
-            $('#create-fail-alert').css('display', 'block');
-            $('#create-fail-alert').delay(5000).slideUp(500, function() {
-                $('#create-fail-alert').css('display', 'none');
-            });
+            if (response.status === 409) {
+                $scope.errMsg = 'This record already exists.';
+            } else if (response.status === 404) {
+                $scope.errMsg = 'Machine record no longer exists.';
+            }else {
+                $scope.errMsg = 'Something went wrong. Please try again.';
+            }
+            $timeout(function(){
+                $scope.saving = false;
+                ErrorFactory.failure();
+            }, 1000);
         })
     }
 });
 
-app.controller('EditHistoryCtrl', function($scope, $http, $location, $route, $routeParams) {
+app.controller('EditHistoryCtrl', function($scope, $http, $location, $route, $routeParams, $timeout, ngToast, ErrorFactory) {
     $scope.history = {
         serialNumber: $routeParams.serialNumber,
         workOrderNumber: $routeParams.workOrderNumber
     };
+    $scope.saving = false;
 
-    _fetch = function() {
-        $http.get('/api/history/' + $routeParams.serialNumber + '/' + $routeParams.workOrderNumber).then(function(data) {
-            $scope.history = data.data;
-        }).catch(function(response) {
-            console.error('Oops:: ', response.status, response.data);
-        })
-    };
+    $http.get('/api/history/' + $routeParams.serialNumber + '/' + $routeParams.workOrderNumber, { params: { lastUpdated: $routeParams.lastUpdated } }).then(function(data) {
+        var resultWrapper = data.data;
+        $scope.history = resultWrapper.history;
+        return resultWrapper.message;
+    }).then(function(message) {
+        if (message === "RecordWasRecentlyUpdated") {
+            ngToast.create({
+                className: 'warning',
+                content: '<h3>This record has recently been updated. Page has been refreshed.</h3>',
+                timeout: 2000,
+                dismissButton: true,
+            });
+        }
+    }).catch(function(response) {
+        console.error('Oops:: ', response.status, response.data);
+        if (response.status === 404) {
+            ngToast.create({
+                className: 'danger',
+                content: '<h3>Oops! This record does not exist.</h3>',
+                timeout: 5000,
+                dismissButton: true,
+            });
+        } else {
+            ngToast.create({
+                className: 'danger',
+                content: '<h3>Oops! Something went wrong. Please try again.</h3>',
+                timeout: 5000,
+                dismissButton: true,
+            });
+        }
+    })
 
     $scope.updateHistory = function() {
+        $scope.saving = true;
         $http.put('/api/history', $scope.history).then(function(data) {
-            $('#create-success-alert').css('display', 'block');
-            $('#create-success-alert').delay(3000).slideUp(500, function() {
-                $('#create-success-alert').css('display', 'none');
-            });
+            $scope.history = data.data;
+            $timeout(function(){
+                $scope.saving = false;
+                ErrorFactory.success();
+            }, 1000);
         }).catch(function(response) {
             console.error('Oops:: ', response.status, response.data);
-            $('#create-fail-alert').css('display', 'block');
-            $('#create-fail-alert').delay(5000).slideUp(500, function() {
-                $('#create-fail-alert').css('display', 'none');
-            });
+            if (response.status === 409) {
+                $scope.errMsg = 'This record has recently been updated. Please refresh the page.';
+            } else if (response.status === 404) {
+                $scope.errMsg = 'This record no longer exists.';
+            } else {
+                $scope.errMsg = 'Something went wrong. Please try again.';
+            }
+            $timeout(function(){
+                $scope.saving = false;
+                ErrorFactory.failure();
+            }, 1000);
         })
     }
-
-    _fetch();
 });
 
+app.controller('TestCtrl', function($scope) {
+    // $("table").resizableColumns();
+
+    var
+        nameList = ['PierrePierrePierrePierrePierrePierrePierrePierrePierrePierrePierrePierre', 'Pol', 'Jacques', 'Robert', 'Elisa'],
+        familyName = ['Dupont', 'Germain', 'Delcourt', 'bjip', 'Menez'];
+
+    function createRandomItem() {
+        var
+            firstName = nameList[Math.floor(Math.random() * 4)],
+            lastName = familyName[Math.floor(Math.random() * 4)],
+            age = Math.floor(Math.random() * 100),
+            email = firstName + lastName + '@whatever.com',
+            balance = Math.random() * 3000;
+
+        return {
+            firstName: firstName,
+            lastName: lastName,
+            age: age,
+            email: email,
+            balance: balance
+        };
+    }
+
+    $scope.displayed = [];
+    for (var j = 0; j < 50; j++) {
+        $scope.displayed.push(createRandomItem());
+    }
+});
+//
+// app.directive('stRatio', function() {
+//     return {
+//         link: function(scope, element, attr) {
+//             var ratio = +(attr.stRatio);
+//
+//             element.css('width', ratio + '%');
+//
+//         }
+//     };
+// });
+
+// app.directive('colResizeable', function() {
+//   return {
+//     restrict: 'A',
+//     link: function(scope, elem) {
+//       setTimeout(function() {
+//         elem.colResizable({
+//           liveDrag: true,
+//           gripInnerHtml: "<div class='grip'></div>",
+//           draggingClass: "dragging",
+//           onDrag: function() {
+//             //trigger a resize event, so width dependent stuff will be updated
+//             $(window).trigger('resize');
+//           }
+//         });
+//       });
+//     }
+//   };
+// });
 ///////////////////////////jQuery stuff ////////////////////////////////////////

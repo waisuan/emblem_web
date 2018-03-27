@@ -6,7 +6,7 @@ import java.util.Map;
 public enum MaintenanceEnum {
   WORK_ORDER("Work Order"), WORK_ORDER_DATE("W.O. Date"), ACTION_TAKEN("Action Taken"), LAST_UPDATED(
       "Last Updated"), DATE_OF_CREATION("dateOfCreation"), REPORTED_BY("Reported By"), WO_TYPE(
-      "W.O. Type");
+          "W.O. Type"), WORK_ORDER_DATE_IN_STRING("W.O. Date in String"), LAST_UPDATED_IN_LONG("Last Updated in Long");
 
   String prop;
   private static final Map<String, MaintenanceEnum> lookup = new HashMap<String, MaintenanceEnum>();
@@ -35,22 +35,26 @@ public enum MaintenanceEnum {
 
   public String getDBEnum() {
     switch (this) {
-      case WORK_ORDER:
-        return "workOrderNumber";
-      case WORK_ORDER_DATE:
-        return "workOrderDate";
-      case ACTION_TAKEN:
-        return "actionTaken";
-      case LAST_UPDATED:
-        return "lastUpdated";
-      case DATE_OF_CREATION:
-        return "dateOfCreation";
-      case REPORTED_BY:
-        return "reportedBy";
-      case WO_TYPE:
-        return "workOrderType";
-      default:
-        break;
+    case WORK_ORDER:
+      return "workOrderNumber";
+    case WORK_ORDER_DATE:
+      return "workOrderDate";
+    case ACTION_TAKEN:
+      return "actionTaken";
+    case LAST_UPDATED:
+      return "lastUpdated";
+    case DATE_OF_CREATION:
+      return "dateOfCreation";
+    case REPORTED_BY:
+      return "reportedBy";
+    case WO_TYPE:
+      return "workOrderType";
+    case WORK_ORDER_DATE_IN_STRING:
+      return "workOrderDateInString";
+    case LAST_UPDATED_IN_LONG:
+      return "lastUpdatedInLong";
+    default:
+      break;
     }
 
     return "";

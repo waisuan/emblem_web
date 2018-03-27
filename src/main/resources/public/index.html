@@ -9,21 +9,18 @@
     <meta name="author" content="">
     <link rel="icon" href="/emblem.ico" type="image/x-icon">
 
-    <title>Emblem</title>
+    <title>EMBLEM</title>
 
-    <!-- <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.6/angular.min.js"></script> -->
-    <!-- https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/css/bootstrap.min.css integrity="sha384-PsH8R72JQ3SOdhVi3uxftmaW6Vc51MKb0q5P2rRUpPvrszuE4W1povHYgTpBfshb" crossorigin="anonymous" -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
-    <!-- <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous"> -->
-    <!--<link href="/css/bootstrap.css" rel="stylesheet">-->
 
     <link rel="stylesheet" href="/font-awesome-4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="/bower_components/ngToast/dist/ngToast.min.css">
+    <link rel="stylesheet" href="/bower_components/angular-table-resize/dist/angular-table-resize.min.css">
 
-    <!-- Custom styles for this template -->
     <link href="/css/main.css" rel="stylesheet">
 </head>
 
-<body>
+<body ng-controller="NavCtrl">
 
     <nav class="navbar navbar-expand-md navbar-dark bg-dark fixed-top">
         <a class="navbar-brand" href="/"><i class="fa fa-home" aria-hidden="true"></i></a>
@@ -41,9 +38,15 @@
                 </li>
             </ul>
             <ul class="navbar-nav float-right">
-              <li class="nav-item">
-                <a class="nav-link" href="/"><i class="fa fa-question-circle" aria-hidden="true"></i></a>
-              </li>
+                <li class="nav-item">
+                    <!-- <button type="button" class="btn btn-outline-warning btn-sm">
+                      <i class="fa fa-bell" aria-hidden="true"></i>
+                  </button> -->
+                    <a id="ppm-notify" class="nav-link" uib-tooltip="There are {{machinesDue.length}} PPMs due (now/soon)" tooltip-placement="bottom" onclick="return false;" href="#machines-due-ppm" data-toggle="modal"
+                        ng-class="{'notify': machinesDue.length > 0}">
+                        <i class="fa fa-bell" aria-hidden="true"></i>
+                    </a>
+                </li>
             </ul>
             <!-- <form class="form-inline my-2 my-lg-0">
           <input id="search-key" name="search-key" class="form-control mr-sm-2" type="text" placeholder="Search" aria-label="Search">
@@ -56,27 +59,71 @@
     </div> -->
     <div class="container-fluid" ng-view="">
     </div>
-    <!-- <div ng-view="">
-    </div> -->
+
+    <div class="modal fade" id="machines-due-ppm" role="dialog">
+        <div class="modal-dialog modal-lg modal-tbl-dialog">
+            <div class="modal-content">
+                <div class="modal-body container-fluid modal-tbl-body">
+                    <table st-table="copyMachinesDue" st-safe-src="machinesDue" class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th st-sort="serialNumber">Serial No.</th>
+                                <th st-sort="ppmDateInString">PPM Date</th>
+                                <th>Status</th>
+                            </tr>
+                            <tr>
+                                <th colspan="4">
+                    				<input st-search="dueStatus" placeholder="Filter by status" class="input-sm form-control" type="search"/>
+                    			</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr id="{{machine.serialNumber}}" ng-repeat="machine in copyMachinesDue"
+                                ng-class="{'table-primary': machine.dueForPPM == 1,
+                                           'table-warning': machine.dueForPPM == 2,
+                                           'table-danger': machine.dueForPPM == 3}">
+                                <td>
+                                    <b>{{$index + 1}}</b>
+                                </td>
+                                <td>
+                                    {{machine.serialNumber}}
+                                </td>
+                                <td>
+                                    {{machine.ppmDate}}
+                                </td>
+                                <td>
+                                    {{machine.dueStatus}}
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <!-- Bootstrap core JavaScript
     ================================================== -->
     <!-- Placed at the end of the document so the pages load faster -->
-    <script src="http://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
-    <!-- <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script> -->
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.3/umd/popper.min.js" integrity="sha384-vFJXuSJphROIrBnz7yo7oB41mKfc8JzQZiCq4NCceLEaO4IHwicKwpJf9c9IpFgh" crossorigin="anonymous"></script>
-    <!-- <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script> -->
-    <!-- <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/js/bootstrap.min.js" integrity="sha384-alpBpkh1PFOepccYVYDB4do5UnbKysX5WZXm3XxPqe5iKTfUKjNkCk9SaVuEZflJ" crossorigin="anonymous"></script> -->
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
     <script src="/js/angular.js"></script>
     <script src="/js/angular-route.js"></script>
     <script src="/js/angular-cookies.js"></script>
     <script src="/js/angular-sanitize.js"></script>
     <script src="/js/angular-resource.js"></script>
+    <script src="/js/angular-animate.js"></script>
     <script src="/js/angular-ui-bootstrap/ui-bootstrap-tpls-3.0.2.min.js"></script>
     <script src="/scripts/app.js"></script>
     <script src="/bower_components/bootstrap-angular-validation/dist/bootstrap-angular-validation-all.min.js"></script>
     <script src="/bower_components/angular-smart-table/dist/smart-table.min.js"></script>
+    <script src="/bower_components/ngToast/dist/ngToast.min.js"></script>
+    <script src="/bower_components/angular-table-resize/dist/angular-table-resize.min.js"></script>
 </body>
 
 </html>
