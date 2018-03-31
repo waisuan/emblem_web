@@ -7,31 +7,43 @@ remove unused angular directives/services in controller input args e.g. $locatio
 -------------------------------------------
 
 synchronized services / multithreading
-handle records that have been deleted/edited recently -- dealing with stale client side data
+- handle records that have been deleted/edited recently -- dealing with stale client side data
     highlight table row if stale ?
     poll ? (have this as an option) e.g. https://blog.guya.net/2016/08/08/simple-server-polling-in-angularjs-done-right/
-handle records that already exist
+- handle records that already exist
 toggle search -- hasHistory & vice versa
     check box below search box
 attach files
 add dueForPPMs in search
-add spinner to buttons (?)
+- add spinner to buttons (?)
     add spinner to load/pagination/refresh
-cache
-[bug] column sorting (e.g. dates) not accurate
+caching
+- [bug] column sorting (e.g. dates) not accurate
     change ppmDateInLong/tncDateInLong to YYYYMMDD String
 filter due ppms status + serialNumber in due PPM popup
 resizable table column width
-    nowrap column / long column text ?
-date validation
-onRefresh -- navbar loses data if not on machines.html
-exceptionHandling in $http.get
+    - nowrap column / long column text ?
+- date validation
+- onRefresh -- navbar loses data if not on machines.html
+- exceptionHandling in $http.get
 synchronization is slow
-distinguish updates to history and machine -- get/setHistoryCount should be
+- distinguish updates to history and machine -- get/setHistoryCount should be
     separate exceptions too
-show machine no. on history page -- which machine's history?
-add icon to buttons/notifications -- e.g. success, failure, add, delete, save
+- show machine no. on history page -- which machine's history?
+- add icon to buttons/notifications -- e.g. success, failure, add, delete, save
 have a separate addHistory option
+encrypt password
+export as...
+add "createdBy" info/field
+admin dashboard
+    show logs
+    set permissions
+registration
+
+recurring db backup
+connect github with heroku
+upgrade heroku
+upgrade mlab
 
 re-design idea:: actions go out of the table as buttons (on top of the table?) -- select by click on row / checkbox / radio button
 

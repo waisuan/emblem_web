@@ -27,6 +27,8 @@ public class QuickModelCreator {
     int month = ThreadLocalRandom.current().nextInt(10, 12 + 1);
     int year = ThreadLocalRandom.current().nextInt(1980, 2020 + 1);
 
+    // s.createUser("dummy", "1234");
+    s.logout("dummy");
     // for (int i = 0; i < 50; ++i) {
     // Machine m = new Machine("S" + serialNumber, "CUSTOMER" + number, "STATE" + number, "TYPE" + number,
     // "MODEL" + number, month + "/" + day + "/" + year, "STATUS" + number, "PERSON" + number, "PERSON" + number,

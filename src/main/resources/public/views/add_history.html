@@ -32,17 +32,18 @@
     <div class="row">
         <div class="col-md-12">
             <button class="btn btn-primary submit-btn" type="submit" ng-class="{'disabled': saving == true}">
-                <span ng-show="saving == true"><i class="fa fa-spinner"></i></span> Add
+                <span ng-show="saving == true"><i class="fa fa-spinner"></i></span>
+                <span ng-show="saving != true"><i class="fa fa-plus-square"></i></span> Add
             </button>
         </div>
     </div>
     <div class="row">
         <div class="col-md-12">
             <div id="create-success-alert" class="alert alert-success fade show text-center" role="alert">
-                Success!
+                <i class="fa fa-check-circle"></i> <strong>Success!</strong>
             </div>
             <div id="create-fail-alert" class="alert alert-danger fade show text-center" role="alert">
-                <strong>Oops!</strong> {{errMsg}}
+                <i class="fa fa-times-circle"></i> <strong>Oops!</strong> {{errMsg}}
             </div>
         </div>
     </div>

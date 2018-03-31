@@ -14,35 +14,13 @@ public class User implements Serializable {
   private boolean canSearch;
   private boolean alreadyLoggedOn;
   private boolean isAdmin;
-  private long dateOfCreation;
-  private long lastUpdated;
+  private String lastUpdated;
+  private String dateOfCreation;
+  private Long lastUpdatedInLong;
 
-  public User(String username, String password, boolean canCreate, boolean canEdit,
-      boolean canDelete, boolean canSearch, boolean isAdmin) {
-    this.username = username;
-    this.password = password;
-    this.canCreate = canCreate;
-    this.canEdit = canEdit;
-    this.canDelete = canDelete;
-    this.canSearch = canSearch;
-    this.isAdmin = isAdmin;
-  }
-
-  public User(String username, String password, boolean canCreate, boolean canEdit,
-      boolean canDelete, boolean canSearch, boolean isAdmin, String salt) {
-    this.username = username;
-    this.password = password;
-    this.canCreate = canCreate;
-    this.canEdit = canEdit;
-    this.canDelete = canDelete;
-    this.canSearch = canSearch;
-    this.isAdmin = isAdmin;
-    this.salt = salt;
-  }
-
-  public User(String username, String password, boolean canCreate, boolean canEdit,
-      boolean canDelete, boolean canSearch, boolean isAdmin, String salt, boolean alreadyLoggedOn,
-      long dateOfCreation, long lastUpdated) {
+  public User(String username, String password, boolean canCreate, boolean canEdit, boolean canDelete,
+      boolean canSearch, boolean isAdmin, String salt, boolean alreadyLoggedOn, String dateOfCreation,
+      String lastUpdated, Long lastUpdatedInLong) {
     this.username = username;
     this.password = password;
     this.canCreate = canCreate;
@@ -54,6 +32,20 @@ public class User implements Serializable {
     this.alreadyLoggedOn = alreadyLoggedOn;
     this.dateOfCreation = dateOfCreation;
     this.lastUpdated = lastUpdated;
+    this.lastUpdatedInLong = lastUpdatedInLong;
+  }
+
+  public User(boolean canCreate, boolean canEdit, boolean canDelete, boolean canSearch, boolean isAdmin,
+      boolean alreadyLoggedOn, String dateOfCreation, String lastUpdated, Long lastUpdatedInLong) {
+    this.canCreate = canCreate;
+    this.canEdit = canEdit;
+    this.canDelete = canDelete;
+    this.canSearch = canSearch;
+    this.isAdmin = isAdmin;
+    this.alreadyLoggedOn = alreadyLoggedOn;
+    this.dateOfCreation = dateOfCreation;
+    this.lastUpdated = lastUpdated;
+    this.lastUpdatedInLong = lastUpdatedInLong;
   }
 
   public String getUsername() {
@@ -120,25 +112,6 @@ public class User implements Serializable {
     this.alreadyLoggedOn = alreadyLoggedOn;
   }
 
-  public long getDateOfCreation() {
-    return dateOfCreation;
-  }
-
-  public void setDateOfCreation(long dateOfCreation) {
-    this.dateOfCreation = dateOfCreation;
-  }
-
-  public void updateFields(String username, String password, boolean canCreate, boolean canEdit,
-      boolean canDelete, boolean canSearch, boolean isAdmin) {
-    this.username = username;
-    this.password = password;
-    this.canCreate = canCreate;
-    this.canEdit = canEdit;
-    this.canDelete = canDelete;
-    this.canSearch = canSearch;
-    this.isAdmin = isAdmin;
-  }
-
   public boolean isAdmin() {
     return isAdmin;
   }
@@ -147,11 +120,27 @@ public class User implements Serializable {
     this.isAdmin = isAdmin;
   }
 
-  public long getLastUpdated() {
+  public String getLastUpdated() {
     return lastUpdated;
   }
 
-  public void setLastUpdated(long lastUpdated) {
+  public void setLastUpdated(String lastUpdated) {
     this.lastUpdated = lastUpdated;
+  }
+
+  public String getDateOfCreation() {
+    return dateOfCreation;
+  }
+
+  public void setDateOfCreation(String dateOfCreation) {
+    this.dateOfCreation = dateOfCreation;
+  }
+
+  public Long getLastUpdatedInLong() {
+    return lastUpdatedInLong;
+  }
+
+  public void setLastUpdatedInLong(Long lastUpdatedInLong) {
+    this.lastUpdatedInLong = lastUpdatedInLong;
   }
 }

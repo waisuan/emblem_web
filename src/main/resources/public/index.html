@@ -15,14 +15,13 @@
 
     <link rel="stylesheet" href="/font-awesome-4.7.0/css/font-awesome.min.css">
     <link rel="stylesheet" href="/bower_components/ngToast/dist/ngToast.min.css">
-    <link rel="stylesheet" href="/bower_components/angular-table-resize/dist/angular-table-resize.min.css">
 
     <link href="/css/main.css" rel="stylesheet">
 </head>
 
-<body ng-controller="NavCtrl">
+<body ng-class="{'login-container': location.path() === '/login'}" ng-controller="NavCtrl">
 
-    <nav class="navbar navbar-expand-md navbar-dark bg-dark fixed-top">
+    <nav class="navbar navbar-expand-md navbar-dark bg-dark fixed-top" ng-if="location.path() !== '/login'">
         <a class="navbar-brand" href="/"><i class="fa fa-home" aria-hidden="true"></i></a>
         <div class="collapse navbar-collapse">
             <ul class="navbar-nav mr-auto">
@@ -46,6 +45,18 @@
                         ng-class="{'notify': machinesDue.length > 0}">
                         <i class="fa fa-bell" aria-hidden="true"></i>
                     </a>
+                </li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
+                        uib-tooltip="Hello, {{ globals.currentUser.username }}!" tooltip-placement="left">
+                        <i class="fa fa-user-circle"></i>
+                    </a>
+                    <div class="dropdown-menu dropdown-menu-right">
+                        <a class="dropdown-item" href="#/logout">
+                            <span ng-show="loggingout == true"><i class="fa fa-spinner"></i></span>
+                            <span ng-show="loggingout != true"><i class="fa fa-sign-out"></i></span> Logout
+                        </a>
+                    </div>
                 </li>
             </ul>
             <!-- <form class="form-inline my-2 my-lg-0">
@@ -86,7 +97,7 @@
                                 <td>
                                     <b>{{$index + 1}}</b>
                                 </td>
-                                <td>
+                                <td class="ellipsis" title="{{machine.serialNumber}}">
                                     {{machine.serialNumber}}
                                 </td>
                                 <td>
@@ -106,6 +117,16 @@
         </div>
     </div>
 
+    <div class="modal fade" id="logging-out" role="dialog">
+        <div class="modal-dialog modal-sm modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-body">
+                    <span><i class="fa fa-spinner"></i> Logging out...</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- Bootstrap core JavaScript
     ================================================== -->
     <!-- Placed at the end of the document so the pages load faster -->
@@ -120,10 +141,11 @@
     <script src="/js/angular-animate.js"></script>
     <script src="/js/angular-ui-bootstrap/ui-bootstrap-tpls-3.0.2.min.js"></script>
     <script src="/scripts/app.js"></script>
+    <script src="/scripts/authService.js"></script>
+    <script src="/scripts/loginController.js"></script>
     <script src="/bower_components/bootstrap-angular-validation/dist/bootstrap-angular-validation-all.min.js"></script>
     <script src="/bower_components/angular-smart-table/dist/smart-table.min.js"></script>
     <script src="/bower_components/ngToast/dist/ngToast.min.js"></script>
-    <script src="/bower_components/angular-table-resize/dist/angular-table-resize.min.js"></script>
 </body>
 
 </html>

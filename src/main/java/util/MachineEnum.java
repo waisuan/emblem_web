@@ -9,10 +9,10 @@ public enum MachineEnum {
           "Last Updated"), DATE_OF_CREATION("Date of Creation"), ALL("All"), REPORTED_BY(
               "Reported By"), ADDITIONAL_NOTES("Additional Notes"), PPM_DATE("PPM Date"), BRAND("Brand"), ALMOST_DUE(
                   "Almost due for PPM"), OVERDUE("Overdue for PPM"), DUE_FOR_PPM("Due for PPM"), HISTORY_COUNT(
-                      "No. of historical entries"), LAST_UPDATED_IN_LONG(
-                          "Last Updated In Long"), TNC_DATE_IN_DATE("T&C Date in String"), PPM_DATE_IN_DATE(
-                              "PPM Date in String"), DUE_STATUS("Due For PPM Status"), PPM_DATE_IN_STRING(
-                                  "PPM Date in String"), TNC_DATE_IN_STRING("T&C Date in String");
+                      "No. of historical entries"), LAST_UPDATED_IN_LONG("Last Updated In Long"), TNC_DATE_IN_DATE(
+                          "T&C Date in String"), PPM_DATE_IN_DATE("PPM Date in String"), DUE_STATUS(
+                              "Due For PPM Status"), PPM_DATE_IN_STRING("PPM Date in String"), TNC_DATE_IN_STRING(
+                                  "T&C Date in String"), DATE_OF_CREATION_IN_LONG("Date of Creation in Long");
 
   private String prop;
   private static final Map<String, MachineEnum> lookup = new HashMap<String, MachineEnum>();
@@ -91,6 +91,8 @@ public enum MachineEnum {
       return "ppmDateInString";
     case TNC_DATE_IN_STRING:
       return "tncDateInString";
+    case DATE_OF_CREATION_IN_LONG:
+      return "dateOfCreationInLong";
     default:
       break;
     }

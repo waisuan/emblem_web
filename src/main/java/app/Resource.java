@@ -16,6 +16,7 @@ import exception.RecordWasRecentlyUpdatedException;
 import model.Machine;
 import model.MaintenanceHistory;
 import model.ResultWrapper;
+import model.User;
 
 public class Resource {
   private static final String API_CONTEXT = "/api";
@@ -30,7 +31,38 @@ public class Resource {
   // https://github.com/shekhargulati/todoapp-spark/blob/master/src/main/resources/public/index.html
   private void setupEndpoints() {
 
-    // TODO What if record does not exist?
+    get(API_CONTEXT + "/login/:username/:password", "application/json", (request, response) -> {
+      User user = null;
+      try {
+        response.status(200);
+        user = service.login(request.params(":username"), request.params(":password"));
+      } catch (RecordAlreadyExistsException re) {
+        response.status(409);
+      } catch (RecordDoesNotExistException re) {
+        response.status(404);
+      } catch (Exception e) {
+        System.err.println("GET (/LOGIN):: " + e.toString());
+        e.printStackTrace();
+        response.status(400);
+      }
+      return user;
+    }, new JsonTransformer());
+
+    get(API_CONTEXT + "/logout/:username", "application/json", (request, response) -> {
+      try {
+        response.status(200);
+        service.logout(request.params(":username"));
+      } catch (RecordAlreadyExistsException re) {
+        response.status(409);
+      } catch (RecordDoesNotExistException re) {
+        response.status(404);
+      } catch (Exception e) {
+        System.err.println("GET (/LOGOUT):: " + e.toString());
+        e.printStackTrace();
+        response.status(400);
+      }
+      return response;
+    }, new JsonTransformer());
 
     // get(API_CONTEXT + "/machines/:type/:value", "application/json",
     // (request, response) -> service.getMachine(request.params(":type"), request.params(":value")),
@@ -43,6 +75,7 @@ public class Resource {
         wrapper = service.getAllMachines();
       } catch (Exception e) {
         System.err.println("GET (/machines):: " + e.toString());
+        e.printStackTrace();
         response.status(400);
       }
       return wrapper;
@@ -55,6 +88,7 @@ public class Resource {
         machinesDue = service.getAllMachinesDue();
       } catch (Exception e) {
         System.err.println("GET (/machines/due):: " + e.toString());
+        e.printStackTrace();
         response.status(400);
       }
       return machinesDue;
@@ -73,6 +107,7 @@ public class Resource {
         response.status(404);
       } catch (Exception e) {
         System.err.println("GET (/machines/:serialNumber/:lastUpdated):: " + e.toString());
+        e.printStackTrace();
         response.status(400);
       }
       return wrapper;
@@ -88,6 +123,7 @@ public class Resource {
         response.status(409);
       } catch (Exception e) {
         System.err.println("POST (/machines):: " + e.toString());
+        e.printStackTrace();
         response.status(400);
       }
       return wrapper;
@@ -105,6 +141,7 @@ public class Resource {
         response.status(404);
       } catch (Exception e) {
         System.err.println("PUT (/machines):: " + e.toString());
+        e.printStackTrace();
         response.status(400);
       }
       return wrapper;
@@ -120,6 +157,7 @@ public class Resource {
         response.status(404);
       } catch (Exception e) {
         System.err.println("DELETE (/machines):: " + e.toString());
+        e.printStackTrace();
         response.status(400);
       }
       return response;
@@ -134,6 +172,7 @@ public class Resource {
         response.status(404);
       } catch (Exception e) {
         System.err.println("GET (/history/:serialNumber):: " + e.toString());
+        e.printStackTrace();
         response.status(400);
       }
       return history;
@@ -151,6 +190,7 @@ public class Resource {
         response.status(404);
       } catch (Exception e) {
         System.err.println("GET (/history/:serialNumber/:workOrderNumber):: " + e.toString());
+        e.printStackTrace();
         response.status(400);
       }
       return wrapper;
@@ -167,6 +207,7 @@ public class Resource {
         response.status(404);
       } catch (Exception e) {
         System.err.println("POST (/history):: " + e.toString());
+        e.printStackTrace();
         response.status(400);
       }
       return response;
@@ -183,6 +224,7 @@ public class Resource {
         response.status(404);
       } catch (Exception e) {
         System.err.println("PUT (/history):: " + e.toString());
+        e.printStackTrace();
         response.status(400);
       }
       return history;
@@ -200,6 +242,7 @@ public class Resource {
             response.status(404);
           } catch (Exception e) {
             System.err.println("DELETE (/history):: " + e.toString());
+            e.printStackTrace();
             response.status(400);
           }
           return response;

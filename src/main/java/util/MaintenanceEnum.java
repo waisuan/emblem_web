@@ -6,7 +6,8 @@ import java.util.Map;
 public enum MaintenanceEnum {
   WORK_ORDER("Work Order"), WORK_ORDER_DATE("W.O. Date"), ACTION_TAKEN("Action Taken"), LAST_UPDATED(
       "Last Updated"), DATE_OF_CREATION("dateOfCreation"), REPORTED_BY("Reported By"), WO_TYPE(
-          "W.O. Type"), WORK_ORDER_DATE_IN_STRING("W.O. Date in String"), LAST_UPDATED_IN_LONG("Last Updated in Long");
+          "W.O. Type"), WORK_ORDER_DATE_IN_STRING("W.O. Date in String"), LAST_UPDATED_IN_LONG(
+              "Last Updated in Long"), DATE_OF_CREATION_IN_LONG("Date of Creation in Long");
 
   String prop;
   private static final Map<String, MaintenanceEnum> lookup = new HashMap<String, MaintenanceEnum>();
@@ -53,6 +54,8 @@ public enum MaintenanceEnum {
       return "workOrderDateInString";
     case LAST_UPDATED_IN_LONG:
       return "lastUpdatedInLong";
+    case DATE_OF_CREATION_IN_LONG:
+      return "dateOfCreationInLong";
     default:
       break;
     }

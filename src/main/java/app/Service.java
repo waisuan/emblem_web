@@ -18,18 +18,64 @@ import exception.RecordWasRecentlyUpdatedException;
 import model.Machine;
 import model.MaintenanceHistory;
 import model.ResultWrapper;
+import model.User;
 import util.CustomDateTimeFormatter;
 import util.MachineEnum;
 import util.MaintenanceEnum;
+import util.UserEnum;
 
 public class Service {
   private final MongoDatabase db;
 
   public final static String MACHINE_COLLECTION = "machines";
   public final static String MAINTENANCE_COLLECTION = "maintenance";
+  public final static String USERS_COLLECTION = "users";
 
   public Service(MongoDatabase mongoDatabase) {
     this.db = mongoDatabase;
+  }
+
+  public User login(String username, String password) throws Exception {
+    Document record = db.getCollection(USERS_COLLECTION)
+        .find(new Document("username", username).append("password", password)).first();
+
+    if (record == null) {
+      throw new RecordDoesNotExistException();
+    }
+
+    User user = new User(record.getBoolean(UserEnum.CAN_CREATE.getDBEnum(), false),
+        record.getBoolean(UserEnum.CAN_EDIT.getDBEnum(), false),
+        record.getBoolean(UserEnum.CAN_DELETE.getDBEnum(), false),
+        record.getBoolean(UserEnum.CAN_SEARCH.getDBEnum(), false),
+        record.getBoolean(UserEnum.IS_ADMIN.getDBEnum(), false),
+        record.getBoolean(UserEnum.ALREADY_LOGGED_ON.getDBEnum(), false),
+        record.getString(UserEnum.DATE_OF_CREATION.getDBEnum()), record.getString(UserEnum.LAST_UPDATED.getDBEnum()),
+        record.getLong(UserEnum.LAST_UPDATED_IN_LONG.getDBEnum()));
+
+    if (user.isAlreadyLoggedOn()) {
+      throw new RecordAlreadyExistsException();
+    }
+
+    db.getCollection(USERS_COLLECTION).updateOne(new Document(UserEnum.USERNAME.getDBEnum(), username),
+        new Document().append("$set", new Document().append(UserEnum.ALREADY_LOGGED_ON.getDBEnum(), true)));
+
+    return user;
+  }
+
+  public void logout(String username) throws Exception {
+    Document record = db.getCollection(USERS_COLLECTION).find(new Document("username", username)).first();
+
+    if (record == null) {
+      throw new RecordDoesNotExistException();
+    }
+
+    db.getCollection(USERS_COLLECTION).updateOne(new Document(UserEnum.USERNAME.getDBEnum(), username),
+        new Document().append("$set", new Document().append(UserEnum.ALREADY_LOGGED_ON.getDBEnum(), false)));
+  }
+
+  public void createUser(String username, String password) throws Exception {
+    db.getCollection(USERS_COLLECTION).insertOne(
+        new Document(UserEnum.USERNAME.getDBEnum(), username).append(UserEnum.PASSWORD.getDBEnum(), password));
   }
 
   private Machine constructMachineForGet(Document document) {
@@ -51,7 +97,8 @@ public class Service {
         document.getDate(MachineEnum.PPM_DATE_IN_DATE.getDBEnum()),
         document.getString(MachineEnum.DUE_STATUS.getDBEnum()),
         document.getString(MachineEnum.PPM_DATE_IN_STRING.getDBEnum()),
-        document.getString(MachineEnum.TNC_DATE_IN_STRING.getDBEnum()));
+        document.getString(MachineEnum.TNC_DATE_IN_STRING.getDBEnum()),
+        document.getLong(MachineEnum.DATE_OF_CREATION_IN_LONG.getDBEnum()));
     return machine;
   }
 
@@ -79,7 +126,8 @@ public class Service {
         .append(MachineEnum.TNC_DATE_IN_DATE.getDBEnum(), machine.getTncDateInDate())
         .append(MachineEnum.DUE_STATUS.getDBEnum(), machine.getDueStatus())
         .append(MachineEnum.PPM_DATE_IN_STRING.getDBEnum(), machine.getPpmDateInString())
-        .append(MachineEnum.TNC_DATE_IN_STRING.getDBEnum(), machine.getTncDateInString());
+        .append(MachineEnum.TNC_DATE_IN_STRING.getDBEnum(), machine.getTncDateInString())
+        .append(MachineEnum.DATE_OF_CREATION_IN_LONG.getDBEnum(), machine.getDateOfCreationInLong());
     return document;
   }
 
@@ -119,7 +167,8 @@ public class Service {
         document.getString(MaintenanceEnum.LAST_UPDATED.getDBEnum()),
         document.getString(MaintenanceEnum.DATE_OF_CREATION.getDBEnum()),
         document.getString(MaintenanceEnum.WORK_ORDER_DATE_IN_STRING.getDBEnum()),
-        document.getLong(MaintenanceEnum.LAST_UPDATED_IN_LONG.getDBEnum()));
+        document.getLong(MaintenanceEnum.LAST_UPDATED_IN_LONG.getDBEnum()),
+        document.getLong(MaintenanceEnum.DATE_OF_CREATION_IN_LONG.getDBEnum()));
 
     return history;
   }
@@ -134,7 +183,8 @@ public class Service {
         .append(MaintenanceEnum.LAST_UPDATED.getDBEnum(), history.getLastUpdated())
         .append(MaintenanceEnum.DATE_OF_CREATION.getDBEnum(), history.getDateOfCreation())
         .append(MaintenanceEnum.WORK_ORDER_DATE_IN_STRING.getDBEnum(), history.getWorkOrderDateInString())
-        .append(MaintenanceEnum.LAST_UPDATED_IN_LONG.getDBEnum(), history.getLastUpdatedInLong());
+        .append(MaintenanceEnum.LAST_UPDATED_IN_LONG.getDBEnum(), history.getLastUpdatedInLong())
+        .append(MaintenanceEnum.DATE_OF_CREATION_IN_LONG.getDBEnum(), history.getDateOfCreationInLong());
     return document;
   }
 
@@ -160,7 +210,7 @@ public class Service {
     machine.setDueForPPM(new Integer(0));
     machine.setDueStatus("");
 
-    if (machine.getPpmDate() != null) {
+    if (machine.getPpmDate() != null && !machine.getPpmDate().isEmpty()) {
       if (machine.getPpmDateInString() == null || isInsert || isUpdate) {
         machine.setPpmDateInString(CustomDateTimeFormatter.convertStringToYYYYMMDD(machine.getPpmDate()));
       }
@@ -195,8 +245,8 @@ public class Service {
       }
     }
 
-    if (machine.getTncDate() != null) {
-      if (machine.getTncDateInString() != null || isInsert || isUpdate) {
+    if (machine.getTncDate() != null && !machine.getTncDate().isEmpty()) {
+      if (machine.getTncDateInString() == null || isInsert || isUpdate) {
         machine.setTncDateInString(CustomDateTimeFormatter.convertStringToYYYYMMDD(machine.getTncDate()));
       }
       if (machine.getTncDateInDate() == null || isInsert || isUpdate) {
@@ -206,6 +256,7 @@ public class Service {
 
     if (isInsert) {
       machine.setDateOfCreation(CustomDateTimeFormatter.convertLongToDateString(currTimestamp));
+      machine.setDateOfCreationInLong(currTimestamp);
     }
 
     if (isInsert || isUpdate) {
@@ -229,6 +280,7 @@ public class Service {
 
     if (isInsert) {
       history.setDateOfCreation(CustomDateTimeFormatter.convertLongToDateString(currTimestamp));
+      history.setDateOfCreationInLong(currTimestamp);
     }
 
     if (isInsert || isUpdate) {
@@ -354,9 +406,6 @@ public class Service {
     db.getCollection(MACHINE_COLLECTION).updateOne(
         new Document(MachineEnum.SERIAL_NUM.getDBEnum(), machine.getSerialNumber()),
         constructMachineForUpdate(machine));
-    // db.getCollection(MACHINE_COLLECTION).replaceOne(
-    // new Document(MachineEnum.SERIAL_NUM.getDBEnum(), machine.getSerialNumber()),
-    // constructMachineForUpdate(machine));
 
     wrapper.setMachine(machine);
     wrapper.setMachinesDue(getAllMachinesDue());

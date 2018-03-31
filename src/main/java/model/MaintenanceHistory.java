@@ -16,6 +16,7 @@ public class MaintenanceHistory implements Serializable {
   private String workOrderType;
   private String workOrderDateInString;
   private Long lastUpdatedInLong;
+  private Long dateOfCreationInLong;
 
   public MaintenanceHistory(String serialNumber, String workOrderNumber, String workOrderDate, String actionTaken,
       String reportedBy, String workOrderType) {
@@ -29,7 +30,7 @@ public class MaintenanceHistory implements Serializable {
 
   public MaintenanceHistory(String serialNumber, String workOrderNumber, String workOrderDate, String actionTaken,
       String reportedBy, String workOrderType, String lastUpdated, String dateOfCreation, String workOrderDateInString,
-      Long lastUpdatedInLong) {
+      Long lastUpdatedInLong, Long dateOfCreationInLong) {
     this.serialNumber = serialNumber;
     this.workOrderNumber = workOrderNumber;
     this.workOrderDate = workOrderDate;
@@ -40,6 +41,7 @@ public class MaintenanceHistory implements Serializable {
     this.dateOfCreation = dateOfCreation;
     this.workOrderDateInString = workOrderDateInString;
     this.lastUpdatedInLong = lastUpdatedInLong;
+    this.dateOfCreationInLong = dateOfCreationInLong;
   }
 
   public String getSerialNumber() {
@@ -120,6 +122,14 @@ public class MaintenanceHistory implements Serializable {
 
   public void setLastUpdatedInLong(Long lastUpdatedInLong) {
     this.lastUpdatedInLong = lastUpdatedInLong;
+  }
+
+  public Long getDateOfCreationInLong() {
+    return dateOfCreationInLong;
+  }
+
+  public void setDateOfCreationInLong(Long dateOfCreationInLong) {
+    this.dateOfCreationInLong = dateOfCreationInLong;
   }
 
 }

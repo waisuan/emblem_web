@@ -6,8 +6,7 @@ var app = angular.module('emblem', [
     'bootstrap.angular.validation',
     'smart-table',
     'ui.bootstrap',
-    'ngToast',
-    'rzTable'
+    'ngToast'
 ]);
 
 app.config(['$locationProvider', function($locationProvider) {
@@ -55,9 +54,49 @@ app.config(function($routeProvider) {
     }).when('/test', {
         templateUrl: 'views/test.html',
         controller: 'TestCtrl'
+    }).when('/login', {
+        templateUrl: 'views/login.html',
+        controller: 'LoginCtrl'
     }).otherwise({
         redirectTo: '/'
     })
+});
+
+app.run(function($rootScope, $location, $cookieStore, $http, $timeout, AuthenticationService) {
+    $rootScope.location = $location;
+    // keep user logged in after page refresh
+    $rootScope.globals = $cookieStore.get('globals') || {};
+    if ($rootScope.globals.currentUser) {
+        $http.defaults.headers.common['Authorization'] = 'Basic ' + $rootScope.globals.currentUser.authdata;
+    }
+
+    $rootScope.$on('$locationChangeStart', function(event, next, current) {
+        if ($location.path() === '/login' && $rootScope.globals.currentUser) {
+            $location.path('/');
+        } else if ($location.path() === '/logout' && $rootScope.globals.currentUser) {
+            $('#logging-out').modal({backdrop: 'static', keyboard: false});
+            $('#logging-out').modal('toggle');
+            AuthenticationService.ClearCredentials(function (response) {
+                console.log(response);
+                $timeout(function() {
+                    $('#logging-out').modal('toggle');
+                    $location.path('/login');
+                }, 1500);
+            });
+            // AuthenticationService.ClearCredentials();
+            // $location.path('/login');
+        } else if ($location.path() !== '/login' && !$rootScope.globals.currentUser) {
+            // redirect to login page if not logged in
+            $location.path('/login');
+        }
+    });
+
+    // $rootScope.$on("$routeChangeStart", function(event, next, current) {
+    //     console.log(next.templateUrl);
+    //     if (!(next.templateUrl == "views/login.html")) {
+    //         $location.path("/login");
+    //     }
+    // })
 });
 
 app.factory('ErrorFactory', function () {
@@ -127,6 +166,14 @@ app.controller('ListMachinesCtrl', function($scope, $http, $location, $route, $t
         // TODO can this be done better? we are fetching for machinesDue TWICE in one reload; here and in NavCtrl
         // is there a way we can only fetch from server (in NavCtrl) if page has been F5-ed?
         $scope.machinesDue = resultWrapper.machinesDue;
+    }).catch(function(response) {
+        console.error('Oops:: ', response.status, response.data);
+        ngToast.create({
+            className: 'danger',
+            content: '<h3>Oops! Something went wrong. Please try again.</h3>',
+            timeout: 5000,
+            dismissButton: true,
+        });
     })
 
     $scope.$watch('machinesDue', function (newValue, oldValue) {
@@ -570,34 +617,5 @@ app.controller('TestCtrl', function($scope) {
         $scope.displayed.push(createRandomItem());
     }
 });
-//
-// app.directive('stRatio', function() {
-//     return {
-//         link: function(scope, element, attr) {
-//             var ratio = +(attr.stRatio);
-//
-//             element.css('width', ratio + '%');
-//
-//         }
-//     };
-// });
 
-// app.directive('colResizeable', function() {
-//   return {
-//     restrict: 'A',
-//     link: function(scope, elem) {
-//       setTimeout(function() {
-//         elem.colResizable({
-//           liveDrag: true,
-//           gripInnerHtml: "<div class='grip'></div>",
-//           draggingClass: "dragging",
-//           onDrag: function() {
-//             //trigger a resize event, so width dependent stuff will be updated
-//             $(window).trigger('resize');
-//           }
-//         });
-//       });
-//     }
-//   };
-// });
 ///////////////////////////jQuery stuff ////////////////////////////////////////
