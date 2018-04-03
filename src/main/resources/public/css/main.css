@@ -37,6 +37,11 @@ body {
     margin-bottom: 5px;
 }
 
+/* .submit-btn2 {
+    float: right;
+    margin-bottom: 5px;
+} */
+
 .table-hover tbody tr:hover td {
   background-color: #FAFAD2; /* #F5F5F5 #F0FFFF #E0FFFF */
 }
@@ -129,7 +134,7 @@ body {
 } */
 
 .ellipsis {
-    max-width: 130px;
+    max-width: 100px;
     text-overflow: ellipsis;
     overflow: hidden;
     white-space: nowrap;
@@ -199,4 +204,8 @@ body {
 
 .has-error .help-block {
   color: red;
+}
+
+.file-size-error {
+    color: red;
 }

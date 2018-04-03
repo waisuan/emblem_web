@@ -98,7 +98,8 @@ public class Service {
         document.getString(MachineEnum.DUE_STATUS.getDBEnum()),
         document.getString(MachineEnum.PPM_DATE_IN_STRING.getDBEnum()),
         document.getString(MachineEnum.TNC_DATE_IN_STRING.getDBEnum()),
-        document.getLong(MachineEnum.DATE_OF_CREATION_IN_LONG.getDBEnum()));
+        document.getLong(MachineEnum.DATE_OF_CREATION_IN_LONG.getDBEnum()),
+        document.getString(MachineEnum.DISTRICT.getDBEnum()));
     return machine;
   }
 
@@ -127,7 +128,8 @@ public class Service {
         .append(MachineEnum.DUE_STATUS.getDBEnum(), machine.getDueStatus())
         .append(MachineEnum.PPM_DATE_IN_STRING.getDBEnum(), machine.getPpmDateInString())
         .append(MachineEnum.TNC_DATE_IN_STRING.getDBEnum(), machine.getTncDateInString())
-        .append(MachineEnum.DATE_OF_CREATION_IN_LONG.getDBEnum(), machine.getDateOfCreationInLong());
+        .append(MachineEnum.DATE_OF_CREATION_IN_LONG.getDBEnum(), machine.getDateOfCreationInLong())
+        .append(MachineEnum.DISTRICT.getDBEnum(), machine.getDistrict());
     return document;
   }
 
@@ -153,7 +155,8 @@ public class Service {
             .append(MachineEnum.TNC_DATE_IN_DATE.getDBEnum(), machine.getTncDateInDate())
             .append(MachineEnum.DUE_STATUS.getDBEnum(), machine.getDueStatus())
             .append(MachineEnum.PPM_DATE_IN_STRING.getDBEnum(), machine.getPpmDateInString())
-            .append(MachineEnum.TNC_DATE_IN_STRING.getDBEnum(), machine.getTncDateInString()));
+            .append(MachineEnum.TNC_DATE_IN_STRING.getDBEnum(), machine.getTncDateInString())
+            .append(MachineEnum.DISTRICT.getDBEnum(), machine.getDistrict()));
     return document;
   }
 

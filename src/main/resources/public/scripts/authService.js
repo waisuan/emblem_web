@@ -21,18 +21,12 @@
                 }
                 callback(response);
             });
-
-            //  (The following code will be replaced by a real service you'd hope!)
-            // var response = { success: username === 'admin' && password === '9999' };
-            // if(!response.success) {
-            //     response.message = 'Username/password is incorrect.';
-            // }
-            // callback(response);
         };
 
         //  Sets the cookie and the state to logged in
         var SetCredentials = function(username, password) {
-            var authdata = username + ':' + password; // We shoud really encrypt this, but this is left clear case for this example :)
+            <!-- https://github.com/brix/crypto-js -->
+            var authdata = CryptoJS.AES.encrypt(username + ':' + password, "emblem").toString();
             $rootScope.globals = {
                 currentUser: {
                     username: username,
@@ -52,6 +46,7 @@
                     callback({success: true});
                 }).catch(function(response) {
                     console.error('Oops:: ', response.status, response.data);
+                    // TODO should we do something here? toast?
                     // if (response.status === 404) {
                     //     response.message = 'User no longer exists.';
                     // } else {

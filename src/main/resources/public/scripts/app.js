@@ -6,7 +6,8 @@ var app = angular.module('emblem', [
     'bootstrap.angular.validation',
     'smart-table',
     'ui.bootstrap',
-    'ngToast'
+    'ngToast',
+    'angularFileUpload'
 ]);
 
 app.config(['$locationProvider', function($locationProvider) {
@@ -83,20 +84,11 @@ app.run(function($rootScope, $location, $cookieStore, $http, $timeout, Authentic
                     $location.path('/login');
                 }, 1500);
             });
-            // AuthenticationService.ClearCredentials();
-            // $location.path('/login');
         } else if ($location.path() !== '/login' && !$rootScope.globals.currentUser) {
             // redirect to login page if not logged in
             $location.path('/login');
         }
     });
-
-    // $rootScope.$on("$routeChangeStart", function(event, next, current) {
-    //     console.log(next.templateUrl);
-    //     if (!(next.templateUrl == "views/login.html")) {
-    //         $location.path("/login");
-    //     }
-    // })
 });
 
 app.factory('ErrorFactory', function () {
@@ -145,7 +137,7 @@ app.controller('NavCtrl', function($scope, $http, MachinesFactory) {
 });
 
 app.controller('ListMachinesCtrl', function($scope, $http, $location, $route, $timeout, ngToast, MachinesFactory) {
-    $scope.options = [{actual: 'All', internal: '$'}, {actual: 'Serial No.', internal: 'serialNumber'}, {actual: 'State', internal: 'state'},
+    $scope.options = [{actual: 'All', internal: '$'}, {actual: 'Serial No.', internal: 'serialNumber'}, {actual: 'State', internal: 'state'}, {actual: 'District', internal: 'district'},
                       {actual: 'Model', internal: 'model'}, {actual: 'TNC Date', internal: 'tncDate'}, {actual: 'PPM Date', internal: 'ppmDate'},
                       {actual: 'Customer', internal: 'customer'}, {actual: 'Status', internal: 'status'}, {actual: 'Account Type', internal: 'accountType'},
                       {actual: 'Brand', internal: 'brand'}, {actual: 'Person In Charge', internal: 'personInCharge'}, {actual: 'Reported By', internal: 'reportedBy'},
@@ -258,9 +250,31 @@ app.controller('ListMachinesCtrl', function($scope, $http, $location, $route, $t
     }
 });
 
-app.controller('CreateNewMachineCtrl', function($scope, $http, $location, $route, $timeout, MachinesFactory, ErrorFactory) {
+app.controller('CreateNewMachineCtrl', function($scope, $http, $location, $route, $timeout, MachinesFactory, ErrorFactory, FileUploader) {
     $scope.newMachine = {};
     $scope.saving = false;
+    $scope.uploader = new FileUploader();
+
+    $scope.uploader.filters.push({
+        'name': 'enforceMaxFileSize',
+        'fn': function (item) {
+            return item.size/1024/1024 <= 500; // 10 MiB to bytes
+        }
+    });
+
+    $scope.uploader.onWhenAddingFileFailed = function (fileItem, filter, options) {
+        if (filter.name === 'enforceMaxFileSize') {
+            $scope.exceedMaxSize = true;
+            $scope.uploader.clearQueue();
+        }
+    }
+
+    $scope.uploader.onAfterAddingFile = function(fileItem) {
+        if($scope.uploader.queue.length > 1){
+            $scope.uploader.queue.splice(0, $scope.uploader.queue.splice.length - 1);
+        }
+        $scope.exceedMaxSize = false;
+    };
 
     $scope.$watch('machinesDue', function (newValue, oldValue) {
         if (newValue !== oldValue) {
@@ -270,11 +284,18 @@ app.controller('CreateNewMachineCtrl', function($scope, $http, $location, $route
 
     $scope.createNewMachine = function() {
         $scope.saving = true;
+
+        if ($scope.uploader.queue.length) {
+            $scope.newMachine.attachment = $scope.uploader.queue[0].file;
+        }
+
         $http.post('/api/machines', $scope.newMachine).then(function(data) {
             var resultWrapper = data.data;
             $scope.machinesDue = resultWrapper.machinesDue;
             $timeout(function(){
                 $scope.newMachine = {};
+                $scope.uploader.clearQueue();
+                $('#machineAttachment').val('');
                 $scope.saving = false;
                 ErrorFactory.success();
             }, 1000);
@@ -297,7 +318,6 @@ app.controller('EditMachineCtrl', function($scope, $http, $location, $route, $ro
     $scope.editMachine = {};
     $scope.saving = false;
 
-    //$http.get('/api/machines/' + $routeParams.serialNumber + '/' + $routeParams.lastUpdated + '/0')
     $http.get('/api/machines/' + $routeParams.serialNumber, { params: { lastUpdated: $routeParams.lastUpdated, hardfailure: '0' } }).then(function(data) {
         var resultWrapper = data.data;
         $scope.editMachine = resultWrapper.machine;

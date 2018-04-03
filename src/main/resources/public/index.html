@@ -80,11 +80,12 @@
                             <tr>
                                 <th>#</th>
                                 <th st-sort="serialNumber">Serial No.</th>
+                                <th st-sort="customer">Customer</th>
                                 <th st-sort="ppmDateInString">PPM Date</th>
                                 <th>Status</th>
                             </tr>
                             <tr>
-                                <th colspan="4">
+                                <th colspan="5">
                     				<input st-search="dueStatus" placeholder="Filter by status" class="input-sm form-control" type="search"/>
                     			</th>
                             </tr>
@@ -99,6 +100,9 @@
                                 </td>
                                 <td class="ellipsis" title="{{machine.serialNumber}}">
                                     {{machine.serialNumber}}
+                                </td>
+                                <td class="ellipsis" title="{{machine.customer}}">
+                                    {{machine.customer}}
                                 </td>
                                 <td>
                                     {{machine.ppmDate}}
@@ -146,6 +150,8 @@
     <script src="/bower_components/bootstrap-angular-validation/dist/bootstrap-angular-validation-all.min.js"></script>
     <script src="/bower_components/angular-smart-table/dist/smart-table.min.js"></script>
     <script src="/bower_components/ngToast/dist/ngToast.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/3.1.9-1/crypto-js.min.js"></script>
+    <script src="/bower_components/angular-file-upload/dist/angular-file-upload.min.js"></script>
 </body>
 
 </html>

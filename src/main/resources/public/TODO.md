@@ -17,7 +17,6 @@ attach files
 add dueForPPMs in search
 - add spinner to buttons (?)
     add spinner to load/pagination/refresh
-caching
 - [bug] column sorting (e.g. dates) not accurate
     change ppmDateInLong/tncDateInLong to YYYYMMDD String
 filter due ppms status + serialNumber in due PPM popup
@@ -39,11 +38,22 @@ admin dashboard
     show logs
     set permissions
 registration
+users - lastLoggedOn
 
 recurring db backup
 connect github with heroku
 upgrade heroku
 upgrade mlab
+custom domain name
+    custom ssl -- https://letsencrypt.org/getting-started/
+addons [https://elements.heroku.com/addons]
+    email/sms (e.g. due ppm)
+    memcache
+    app monitor
+    log monitor
+    maintenance/status pages
+db performance
+    indexing
 
 re-design idea:: actions go out of the table as buttons (on top of the table?) -- select by click on row / checkbox / radio button
 

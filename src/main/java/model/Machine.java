@@ -32,6 +32,7 @@ public class Machine implements Serializable {
   private String ppmDateInString;
   private String tncDateInString;
   private Long dateOfCreationInLong;
+  private String district;
 
   public Machine() {
   }
@@ -56,7 +57,7 @@ public class Machine implements Serializable {
       String status, String personInCharge, String reportedBy, String additionalNotes, String ppmDate, String brand,
       String lastUpdated, String dateOfCreation, Long historyCount, Long lastUpdatedInLong, Date almostDue,
       Date overdue, Integer dueForPPM, Date tncDateInDate, Date ppmDateInDate, String dueStatus, String ppmDateInString,
-      String tncDateInString, Long dateOfCreationInLong) {
+      String tncDateInString, Long dateOfCreationInLong, String district) {
     this.serialNumber = serialNumber;
     this.customer = customer;
     this.state = state;
@@ -82,6 +83,7 @@ public class Machine implements Serializable {
     this.ppmDateInString = ppmDateInString;
     this.tncDateInString = tncDateInString;
     this.dateOfCreationInLong = dateOfCreationInLong;
+    this.district = district;
   }
 
   public String getSerialNumber() {
@@ -282,6 +284,14 @@ public class Machine implements Serializable {
 
   public void setDateOfCreationInLong(Long dateOfCreationInLong) {
     this.dateOfCreationInLong = dateOfCreationInLong;
+  }
+
+  public String getDistrict() {
+    return district;
+  }
+
+  public void setDistrict(String district) {
+    this.district = district;
   }
 
   @Override

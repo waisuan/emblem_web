@@ -12,7 +12,8 @@ public enum MachineEnum {
                       "No. of historical entries"), LAST_UPDATED_IN_LONG("Last Updated In Long"), TNC_DATE_IN_DATE(
                           "T&C Date in String"), PPM_DATE_IN_DATE("PPM Date in String"), DUE_STATUS(
                               "Due For PPM Status"), PPM_DATE_IN_STRING("PPM Date in String"), TNC_DATE_IN_STRING(
-                                  "T&C Date in String"), DATE_OF_CREATION_IN_LONG("Date of Creation in Long");
+                                  "T&C Date in String"), DATE_OF_CREATION_IN_LONG(
+                                      "Date of Creation in Long"), DISTRICT("District");
 
   private String prop;
   private static final Map<String, MachineEnum> lookup = new HashMap<String, MachineEnum>();
@@ -93,6 +94,8 @@ public enum MachineEnum {
       return "tncDateInString";
     case DATE_OF_CREATION_IN_LONG:
       return "dateOfCreationInLong";
+    case DISTRICT:
+      return "district";
     default:
       break;
     }
