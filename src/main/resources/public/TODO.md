@@ -31,14 +31,17 @@ synchronization is slow
 - show machine no. on history page -- which machine's history?
 - add icon to buttons/notifications -- e.g. success, failure, add, delete, save
 have a separate addHistory option
-encrypt password
+- encrypt password
 export as...
 add "createdBy" info/field
 admin dashboard
     show logs
     set permissions
 registration
+    user profiles
 users - lastLoggedOn
+in-app communication sys
+reportedBy as url/links to user profile
 
 recurring db backup
 connect github with heroku
@@ -55,6 +58,7 @@ addons [https://elements.heroku.com/addons]
 db performance
     indexing
 
+re-design idea:: instead of tables, why not a list of "posts"?
 re-design idea:: actions go out of the table as buttons (on top of the table?) -- select by click on row / checkbox / radio button
 
 how do i improve perf for due ppms alerts?

@@ -1,3 +1,4 @@
+// Taken from http://embed.plnkr.co/aYrzMR/
 (function() {
 
     var AuthenticationService = function($http, $cookieStore, $rootScope, $timeout) {

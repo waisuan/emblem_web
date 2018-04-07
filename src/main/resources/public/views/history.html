@@ -2,10 +2,10 @@
 
 <div class="container">
     <div class="row search-area">
-        <div class="col-md-2 padding-zero">
+        <div class="col-md-2 padding-zero mt-1">
             <select class="custom-select form-control" id="searchTypeOptions" ng-model="searchAttributes.option" ng-options="opt.actual as opt.actual for opt in options" ng-change="setHistorySearchFilter()"></select>
         </div>
-        <div class="col-md-8 padding-zero">
+        <div class="col-md-8 padding-zero mt-1">
             <div class="input-group">
                 <div class="input-group-prepend">
                     <span class="input-group-text"><i class="fa fa-search"></i></span>
@@ -13,7 +13,7 @@
                 <input id="searchValueInput" type="text" class="form-control" placeholder="What are you looking for?" ng-model="searchAttributes.value" ng-change="setHistorySearchFilter()">
             </div>
         </div>
-        <div class="col-md-2 padding-zero">
+        <div class="col-md-2 padding-zero mt-1">
             <button type="button" class="btn btn-info disabled">
               No. of Entries: <span class="badge badge-light">{{currHistory.length}}</span>
             </button>
